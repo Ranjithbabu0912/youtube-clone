@@ -10,6 +10,17 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    const localUser = localStorage.getItem("user");
+    if (localUser) {
+      try {
+        setUser(JSON.parse(localUser));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
+
   const login = (userdata) => {
     setUser(userdata);
     localStorage.setItem("user", JSON.stringify(userdata));

@@ -67,7 +67,7 @@ const Channeldialogue = ({ isopen, onclose, channeldata, mode }: any) => {
   };
   return (
     <Dialog open={isopen} onOpenChange={onclose}>
-      <DialogContent className="sm:max-w-md md:max-w-lg">
+      <DialogContent className="sm:max-w-md md:max-w-lg" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>
             {mode === "create" ? "Create your channel" : "Edit your channel"}

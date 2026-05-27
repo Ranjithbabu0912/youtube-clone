@@ -1,7 +1,8 @@
-import { Bell, Menu, Mic, Search, User, VideoIcon, ArrowLeft } from "lucide-react";
+import { Bell, Menu, Mic, Search, User, VideoIcon, ArrowLeft, Crown } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import PremiumModal from "./PremiumModal";
 import { Input } from "./ui/input";
 import {
   DropdownMenu,
@@ -22,6 +23,7 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isdialogeopen, setisdialogeopen] = useState(false);
   const [isMobileSearch, setIsMobileSearch] = useState(false);
+  const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
   const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -133,6 +135,15 @@ const Header = () => {
 
         {user ? (
           <>
+            {user?.plan !== "premium" && (
+              <Button
+                onClick={() => setIsPremiumModalOpen(true)}
+                className="flex items-center gap-1 rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-3 h-8 shadow-sm mr-1.5"
+              >
+                <Crown className="w-3.5 h-3.5 fill-white" />
+                Go Premium
+              </Button>
+            )}
             <Button variant="ghost" size="icon" className="rounded-full hidden sm:inline-flex">
               <VideoIcon className="w-5 h-5" />
             </Button>
@@ -149,9 +160,28 @@ const Header = () => {
                     <AvatarImage src={user.image} />
                     <AvatarFallback>{user.name?.[0] || "U"}</AvatarFallback>
                   </Avatar>
+                  {user?.plan === "premium" && (
+                    <span className="absolute -top-1 -right-1 bg-red-600 rounded-full p-0.5 border border-white">
+                      <Crown className="w-2.5 h-2.5 text-white fill-white" />
+                    </span>
+                  )}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
+                {user?.plan === "premium" ? (
+                  <div className="px-3 py-2 flex items-center gap-1.5 text-xs font-bold text-red-600 border-b border-gray-100 bg-red-50/50 rounded-t-md">
+                    <Crown className="w-4 h-4 fill-red-600" />
+                    Premium Member
+                  </div>
+                ) : (
+                  <DropdownMenuItem
+                    onClick={() => setIsPremiumModalOpen(true)}
+                    className="text-red-600 font-bold focus:text-red-700 focus:bg-red-50"
+                  >
+                    <Crown className="w-4 h-4 mr-2" />
+                    Upgrade to Premium
+                  </DropdownMenuItem>
+                )}
                 {user?.channelname ? (
                   <DropdownMenuItem asChild>
                     <Link href={`/channel/${user?._id}`}>Your channel</Link>
@@ -168,6 +198,9 @@ const Header = () => {
                     </Button>
                   </div>
                 )}
+                <DropdownMenuItem asChild>
+                  <Link href="/downloads">Downloads</Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/history">History</Link>
                 </DropdownMenuItem>
@@ -198,6 +231,10 @@ const Header = () => {
         isopen={isdialogeopen}
         onclose={() => setisdialogeopen(false)}
         mode="create"
+      />
+      <PremiumModal
+        isOpen={isPremiumModalOpen}
+        onClose={() => setIsPremiumModalOpen(false)}
       />
     </header>
   );

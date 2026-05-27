@@ -6,6 +6,7 @@ import {
   ThumbsUp,
   History,
   User,
+  Download,
 } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -79,6 +80,12 @@ const Sidebar = () => {
                       Watch later
                     </Button>
                   </Link>
+                  <Link href="/downloads">
+                    <Button variant="ghost" className="w-full justify-start">
+                      <Download className="w-5 h-5 mr-3" />
+                      Downloads
+                    </Button>
+                  </Link>
                   {user?.channelname ? (
                     <Link href={`/channel/${user.id}`}>
                       <Button variant="ghost" className="w-full justify-start">
@@ -138,6 +145,14 @@ const Sidebar = () => {
                 >
                   <History className="w-5 h-5" />
                   <span>History</span>
+                </Link>
+                <Link
+                  href="/downloads"
+                  className="flex flex-col items-center gap-1.5 text-[9px] font-medium text-gray-700 hover:bg-gray-100 hover:text-black w-full py-3 rounded-lg transition-colors"
+                  title="Downloads"
+                >
+                  <Download className="w-5 h-5" />
+                  <span>Downloads</span>
                 </Link>
               </>
             )}

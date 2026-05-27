@@ -4,8 +4,11 @@ const videochema = mongoose.Schema(
     videotitle: { type: String, required: true },
     filename: { type: String, required: true },
     filetype: { type: String, required: true },
-    filename: { type: String, required: true },
-    filepath: { type: String, required: true },
+    filepath: { 
+      type: String, 
+      required: true,
+      get: (v) => (v ? v.replace(/\\/g, "/") : v),
+    },
     filesize: { type: String, required: true },
     videochanel: { type: String, required: true },
     Like: { type: Number, default: 0 },
@@ -14,6 +17,8 @@ const videochema = mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { getters: true },
+    toObject: { getters: true },
   }
 );
 

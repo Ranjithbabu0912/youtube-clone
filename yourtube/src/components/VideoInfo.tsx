@@ -13,6 +13,7 @@ import { formatDistanceToNow } from "date-fns";
 import { useUser } from "@/lib/AuthContext";
 import axiosInstance from "@/lib/axiosinstance";
 import { toast } from "sonner";
+import PremiumModal from "./PremiumModal";
 
 const VideoInfo = ({ video }: any) => {
   const [likes, setlikes] = useState(video.Like || 0);
@@ -22,6 +23,54 @@ const VideoInfo = ({ video }: any) => {
   const [showFullDescription, setShowFullDescription] = useState(false);
   const { user } = useUser();
   const [isWatchLater, setIsWatchLater] = useState(false);
+  const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    if (!user) {
+      toast.error("Please sign in to download videos");
+      return;
+    }
+
+    setDownloading(true);
+    try {
+      // 1. Check & record download limit/event on backend
+      await axiosInstance.post("/download", {
+        userId: user._id,
+        videoId: video._id,
+      });
+
+      toast.success("Download started...");
+
+      // 2. Fetch and trigger direct local download in browser
+      const fileUrl = `${process.env.BACKEND_URL}/${video.filepath}`;
+      const response = await fetch(fileUrl);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = video.filename || `${video.videotitle}.mp4`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.URL.revokeObjectURL(blobUrl);
+      toast.success("Download completed!");
+    } catch (error: any) {
+      console.error("Download error:", error);
+      if (error.response?.status === 403 && error.response?.data?.limitExceeded) {
+        toast.error(error.response?.data?.message || "Download limit reached!");
+        setIsPremiumModalOpen(true);
+      } else {
+        toast.error(
+          error.response?.data?.message || "Failed to download video. Make sure backend is running."
+        );
+      }
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   // const user: any = {
   //   id: "1",
@@ -188,9 +237,11 @@ const VideoInfo = ({ video }: any) => {
             variant="ghost"
             size="sm"
             className="bg-gray-100 rounded-full"
+            disabled={downloading}
+            onClick={handleDownload}
           >
             <Download className="w-5 h-5 mr-2" />
-            Download
+            {downloading ? "Downloading..." : "Download"}
           </Button>
           <Button
             variant="ghost"
@@ -221,6 +272,10 @@ const VideoInfo = ({ video }: any) => {
           {showFullDescription ? "Show less" : "Show more"}
         </Button>
       </div>
+      <PremiumModal
+        isOpen={isPremiumModalOpen}
+        onClose={() => setIsPremiumModalOpen(false)}
+      />
     </div>
   );
 };

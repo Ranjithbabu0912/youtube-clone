@@ -35,10 +35,17 @@ const VideoInfo = ({ video }: any) => {
     setDownloading(true);
     try {
       // 1. Check & record download limit/event on backend
-      await axiosInstance.post("/download", {
+      const res = await axiosInstance.post("/download", {
         userId: user._id,
         videoId: video._id,
       });
+
+      if (res.data && res.data.limitExceeded) {
+        toast.error(res.data.message || "Download limit reached!");
+        setIsPremiumModalOpen(true);
+        setDownloading(false);
+        return;
+      }
 
       toast.success("Download started...");
 

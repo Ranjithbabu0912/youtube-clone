@@ -19,7 +19,7 @@ export const addDownload = async (req, res) => {
       });
 
       if (downloadCount >= 1) {
-        return res.status(403).json({
+        return res.status(200).json({
           limitExceeded: true,
           message: "Free users are limited to 1 download per day. Upgrade to Premium for unlimited downloads!",
         });

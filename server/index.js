@@ -31,16 +31,16 @@ app.use("/watch", watchlaterroutes);
 app.use("/history", historyrroutes);
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`server running on port ${PORT}`);
-});
 
-const DBURL = process.env.DB_URL;
-mongoose
-  .connect(DBURL)
+mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("Mongodb connected");
+    console.log("MongoDB Connected");
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+
   })
-  .catch((error) => {
-    console.log(error);
+  .catch((err) => {
+    console.log("MongoDB Error:", err);
   });

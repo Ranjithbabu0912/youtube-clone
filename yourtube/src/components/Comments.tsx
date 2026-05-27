@@ -48,15 +48,15 @@ const Comments = ({ videoId }: { videoId: any }) => {
   useEffect(() => {
     const detectCity = async () => {
       try {
-        const res = await fetch("https://ipapi.co/json/");
+        const res = await fetch("https://geolocation-db.com/json/");
         const data = await res.json();
         if (data.city) {
           setUserCity(data.city);
         }
       } catch (error) {
-        console.log("Failed to detect city via ipapi.co, trying fallback:", error);
+        console.log("Failed to detect city via geolocation-db.com, trying fallback:", error);
         try {
-          const res = await fetch("https://geolocation-db.com/json/");
+          const res = await fetch("https://ipinfo.io/json");
           const data = await res.json();
           if (data.city) {
             setUserCity(data.city);

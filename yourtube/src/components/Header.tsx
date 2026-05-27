@@ -1,4 +1,4 @@
-import { Bell, Menu, Mic, Search, User, VideoIcon } from "lucide-react";
+import { Bell, Menu, Mic, Search, User, VideoIcon, ArrowLeft } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
@@ -14,77 +14,130 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Channeldialogue from "./channeldialogue";
 import { useRouter } from "next/router";
 import { useUser } from "@/lib/AuthContext";
+import { useSidebar } from "@/lib/SidebarContext";
 
 const Header = () => {
   const { user, logout, handlegooglesignin } = useUser();
-  // const user: any = {
-  //   id: "1",
-  //   name: "John Doe",
-  //   email: "john@example.com",
-  //   image: "https://github.com/shadcn.png?height=32&width=32",
-  // };
+  const { toggle } = useSidebar();
   const [searchQuery, setSearchQuery] = useState("");
   const [isdialogeopen, setisdialogeopen] = useState(false);
+  const [isMobileSearch, setIsMobileSearch] = useState(false);
   const router = useRouter();
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setIsMobileSearch(false); // Close mobile search overlay after search
     }
   };
+
   const handleKeypress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       handleSearch(e as any);
     }
   };
+
+  // Mobile-only active search layout
+  if (isMobileSearch) {
+    return (
+      <header className="flex items-center justify-between px-3 py-2 bg-white border-b gap-2 h-14">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full"
+          onClick={() => setIsMobileSearch(false)}
+        >
+          <ArrowLeft className="w-5 h-5 text-gray-700" />
+        </Button>
+        <form onSubmit={handleSearch} className="flex flex-1 items-center gap-1.5">
+          <Input
+            type="search"
+            placeholder="Search"
+            value={searchQuery}
+            autoFocus
+            onKeyPress={handleKeypress}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="rounded-full flex-1 h-9 px-4 border border-gray-300 focus-visible:ring-0 focus:border-black"
+          />
+          <Button
+            type="submit"
+            size="icon"
+            className="rounded-full h-9 w-9 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 border-l-0"
+          >
+            <Search className="w-4 h-4" />
+          </Button>
+        </form>
+        <Button variant="ghost" size="icon" className="rounded-full">
+          <Mic className="w-4 h-4" />
+        </Button>
+      </header>
+    );
+  }
+
   return (
-    <header className="flex items-center justify-between px-4 py-2 bg-white border-b">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon">
-          <Menu className="w-6 h-6" />
+    <header className="flex items-center justify-between px-4 py-2 bg-white border-b h-14">
+      {/* Left logo area */}
+      <div className="flex items-center gap-3">
+        <Button variant="ghost" size="icon" className="rounded-full" onClick={toggle}>
+          <Menu className="w-5 h-5" />
         </Button>
         <Link href="/" className="flex items-center gap-1">
-          <div className="bg-red-600 p-1 rounded">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+          <div className="bg-red-600 p-1.5 rounded-lg flex items-center justify-center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
               <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
             </svg>
           </div>
-          <span className="text-xl font-medium">YourTube</span>
-          <span className="text-xs text-gray-400 ml-1">IN</span>
+          <span className="text-lg font-semibold tracking-tight ">YourTube</span>
+          <span className="text-[10px] text-gray-400 font-semibold self-start mt-0.5 ml-0.5 hidden sm:inline">IN</span>
         </Link>
       </div>
+
+      {/* Central Search Form (responsive: hidden on mobile) */}
       <form
         onSubmit={handleSearch}
-        className="flex items-center gap-2 flex-1 max-w-2xl mx-4"
+        className="hidden md:flex items-center gap-3 flex-1 max-w-2xl mx-6"
       >
-        <div className="flex flex-1">
+        <div className="flex flex-1 items-center">
           <Input
             type="search"
             placeholder="Search"
             value={searchQuery}
             onKeyPress={handleKeypress}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="rounded-l-full border-r-0 focus-visible:ring-0"
+            className="rounded-l-full border-r-0 focus-visible:ring-0 h-9"
           />
           <Button
             type="submit"
-            className="rounded-r-full px-6 bg-gray-50 hover:bg-gray-100 text-gray-600 border border-l-0"
+            className="rounded-r-full px-5 bg-gray-50 hover:bg-gray-100 text-gray-600 border border-l-0 h-9"
           >
-            <Search className="w-5 h-5" />
+            <Search className="w-4 h-4" />
           </Button>
         </div>
-        <Button variant="ghost" size="icon" className="rounded-full">
-          <Mic className="w-5 h-5" />
+        <Button variant="ghost" size="icon" className="rounded-full h-9 w-9 bg-gray-50">
+          <Mic className="w-4 h-4" />
         </Button>
       </form>
-      <div className="flex items-center gap-2">
+
+      {/* Right actions area */}
+      <div className="flex items-center gap-1 sm:gap-2">
+        {/* Mobile-only Search Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full md:hidden"
+          onClick={() => setIsMobileSearch(true)}
+        >
+          <Search className="w-5 h-5 text-gray-700" />
+        </Button>
+
         {user ? (
           <>
-            <Button variant="ghost" size="icon">
-              <VideoIcon className="w-6 h-6" />
+            <Button variant="ghost" size="icon" className="rounded-full hidden sm:inline-flex">
+              <VideoIcon className="w-5 h-5" />
             </Button>
-            <Button variant="ghost" size="icon">
-              <Bell className="w-6 h-6" />
+            <Button variant="ghost" size="icon" className="rounded-full hidden sm:inline-flex">
+              <Bell className="w-5 h-5" />
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -132,14 +185,14 @@ const Header = () => {
         ) : (
           <>
             <Button
-              className="flex items-center gap-2"
+              className="flex items-center gap-1.5 rounded-full border px-3 h-9 text-xs font-semibold bg-white text-blue-600 border-blue-200 hover:bg-blue-50"
               onClick={handlegooglesignin}
             >
               <User className="w-4 h-4" />
               Sign in
             </Button>
           </>
-        )}{" "}
+        )}
       </div>
       <Channeldialogue
         isopen={isdialogeopen}

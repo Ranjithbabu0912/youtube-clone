@@ -80,9 +80,9 @@ const SearchResult = ({ query }: any) => {
       {video.length > 0 && (
         <div className="space-y-4">
           {video.map((video: any) => (
-            <div key={video._id} className="flex gap-4 group">
-              <Link href={`/watch/${video._id}`} className="flex-shrink-0">
-                <div className="relative w-80 aspect-video bg-gray-100 rounded-lg overflow-hidden">
+            <div key={video._id} className="flex flex-col sm:flex-row gap-4 group">
+              <Link href={`/watch/${video._id}`} className="flex-shrink-0 w-full sm:w-80">
+                <div className="relative w-full aspect-video bg-gray-100 rounded-lg overflow-hidden">
                   <video
                     src={vids}
                     className="object-cover group-hover:scale-105 transition-transform duration-200"
@@ -112,7 +112,7 @@ const SearchResult = ({ query }: any) => {
                   href={`/channel/${video.uploader}`}
                   className="flex items-center gap-2 mb-2 hover:text-blue-600"
                 >
-                  <Avatar className="w-6h-6">
+                  <Avatar className="w-6 h-6">
                     <AvatarImage src="/placeholder.svg?height=24&width=24" />
                     <AvatarFallback className="text-xs">
                       {video.videochanel[0]}

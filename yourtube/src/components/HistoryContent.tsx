@@ -40,20 +40,6 @@ export default function HistoryContent() {
       setLoading(false);
     }
   };
-  if (loading) {
-    return <div>Loading history...</div>;
-  }
-
-  const handleRemoveFromHistory = async (historyId: string) => {
-    try {
-      console.log("Removing from history:", historyId);
-
-      setHistory(history.filter((item) => item._id !== historyId));
-    } catch (error) {
-      console.error("Error removing from history:", error);
-    }
-  };
-
   if (!user) {
     return (
       <div className="text-center py-12">
@@ -67,6 +53,20 @@ export default function HistoryContent() {
       </div>
     );
   }
+
+  if (loading) {
+    return <div>Loading history...</div>;
+  }
+
+  const handleRemoveFromHistory = async (historyId: string) => {
+    try {
+      console.log("Removing from history:", historyId);
+
+      setHistory(history.filter((item) => item._id !== historyId));
+    } catch (error) {
+      console.error("Error removing from history:", error);
+    }
+  };
 
   if (history.length === 0) {
     return (
@@ -86,9 +86,9 @@ export default function HistoryContent() {
 
       <div className="space-y-4">
         {history.map((item) => (
-          <div key={item._id} className="flex gap-4 group">
-            <Link href={`/watch/${item.videoid._id}`} className="flex-shrink-0">
-              <div className="relative w-40 aspect-video bg-gray-100 rounded overflow-hidden">
+          <div key={item._id} className="flex flex-col sm:flex-row gap-4 group">
+            <Link href={`/watch/${item.videoid._id}`} className="flex-shrink-0 w-full sm:w-40">
+              <div className="relative w-full aspect-video bg-gray-100 rounded overflow-hidden">
                 <video
                   src={`${process.env.BACKEND_URL}/${item.videoid?.filepath}`}
                   className="object-cover group-hover:scale-105 transition-transform duration-200"

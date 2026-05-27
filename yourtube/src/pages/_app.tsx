@@ -4,18 +4,24 @@ import { Toaster } from "@/components/ui/sonner";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { UserProvider } from "../lib/AuthContext";
+import { SidebarProvider } from "../lib/SidebarContext";
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <UserProvider>
-      <div className="min-h-screen bg-white text-black">
-        <title>Your-Tube Clone</title>
-        <Header />
-        <Toaster />
-        <div className="flex">
-          <Sidebar />
-          <Component {...pageProps} />
+      <SidebarProvider>
+        <div className="min-h-screen bg-white text-black flex flex-col">
+          <title>Your-Tube Clone</title>
+          <Header />
+          <Toaster />
+          <div className="flex flex-1 relative">
+            <Sidebar />
+            <main className="flex-1 min-w-0 overflow-x-hidden p-4">
+              <Component {...pageProps} />
+            </main>
+          </div>
         </div>
-      </div>
+      </SidebarProvider>
     </UserProvider>
   );
 }

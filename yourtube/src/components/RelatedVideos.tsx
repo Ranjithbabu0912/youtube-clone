@@ -15,7 +15,7 @@ const vid = "/video/vdo.mp4";
 export default function RelatedVideos({ videos }: RelatedVideosProps) {
   return (
     <div className="space-y-2">
-      {videos.map((video) => (
+      {videos?.map((video) => (
         <Link
           key={video._id}
           href={`/watch/${video._id}`}

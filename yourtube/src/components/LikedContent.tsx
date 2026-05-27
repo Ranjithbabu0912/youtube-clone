@@ -89,9 +89,9 @@ export default function LikedVideosContent() {
 
       <div className="space-y-4">
         {likedVideos.map((item) => (
-          <div key={item._id} className="flex gap-4 group">
-            <Link href={`/watch/${item.videoid._id}`} className="flex-shrink-0">
-              <div className="relative w-40 aspect-video bg-gray-100 rounded overflow-hidden">
+          <div key={item._id} className="flex flex-col sm:flex-row gap-4 group">
+            <Link href={`/watch/${item.videoid._id}`} className="flex-shrink-0 w-full sm:w-40">
+              <div className="relative w-full aspect-video bg-gray-100 rounded overflow-hidden">
                 <video
                   src={`${process.env.BACKEND_URL}/${item.videoid?.filepath}`}
                   className="object-cover group-hover:scale-105 transition-transform duration-200"

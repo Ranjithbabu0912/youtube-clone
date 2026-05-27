@@ -12,6 +12,7 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import { useUser } from "@/lib/AuthContext";
 import axiosInstance from "@/lib/axiosinstance";
+import { toast } from "sonner";
 
 const VideoInfo = ({ video }: any) => {
   const [likes, setlikes] = useState(video.Like || 0);
@@ -28,6 +29,7 @@ const VideoInfo = ({ video }: any) => {
   //   email: "john@example.com",
   //   image: "https://github.com/shadcn.png?height=32&width=32",
   // };
+
   useEffect(() => {
     setlikes(video.Like || 0);
     setDislikes(video.Dislike || 0);
@@ -52,7 +54,10 @@ const VideoInfo = ({ video }: any) => {
     handleviews();
   }, [user]);
   const handleLike = async () => {
-    if (!user) return;
+    if (!user) {
+      toast.error("Please sign in to like videos");
+      return;
+    }
     try {
       const res = await axiosInstance.post(`/like/${video._id}`, {
         userId: user?._id,
@@ -75,6 +80,10 @@ const VideoInfo = ({ video }: any) => {
     }
   };
   const handleWatchLater = async () => {
+    if (!user) {
+      toast.error("Please sign in to save videos to Watch Later");
+      return;
+    }
     try {
       const res = await axiosInstance.post(`/watch/${video._id}`, {
         userId: user?._id,
@@ -89,7 +98,10 @@ const VideoInfo = ({ video }: any) => {
     }
   };
   const handleDislike = async () => {
-    if (!user) return;
+    if (!user) {
+      toast.error("Please sign in to dislike videos");
+      return;
+    }
     try {
       const res = await axiosInstance.post(`/like/${video._id}`, {
         userId: user?._id,
@@ -135,9 +147,8 @@ const VideoInfo = ({ video }: any) => {
               onClick={handleLike}
             >
               <ThumbsUp
-                className={`w-5 h-5 mr-2 ${
-                  isLiked ? "fill-black text-black" : ""
-                }`}
+                className={`w-5 h-5 mr-2 ${isLiked ? "fill-black text-black" : ""
+                  }`}
               />
               {likes.toLocaleString()}
             </Button>
@@ -149,9 +160,8 @@ const VideoInfo = ({ video }: any) => {
               onClick={handleDislike}
             >
               <ThumbsDown
-                className={`w-5 h-5 mr-2 ${
-                  isDisliked ? "fill-black text-black" : ""
-                }`}
+                className={`w-5 h-5 mr-2 ${isDisliked ? "fill-black text-black" : ""
+                  }`}
               />
               {dislikes.toLocaleString()}
             </Button>
@@ -159,9 +169,8 @@ const VideoInfo = ({ video }: any) => {
           <Button
             variant="ghost"
             size="sm"
-            className={`bg-gray-100 rounded-full ${
-              isWatchLater ? "text-primary" : ""
-            }`}
+            className={`bg-gray-100 rounded-full ${isWatchLater ? "text-primary" : ""
+              }`}
             onClick={handleWatchLater}
           >
             <Clock className="w-5 h-5 mr-2" />

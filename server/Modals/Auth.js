@@ -6,7 +6,9 @@ const userschema = mongoose.Schema({
   description: { type: String },
   image: { type: String },
   joinedon: { type: Date, default: Date.now },
-  plan: { type: String, default: "free", enum: ["free", "premium"] },
+  plan: { type: String, default: "free", enum: ["free", "bronze", "silver", "gold", "premium"] },
+  watchTime: { type: Number, default: 0 },
+  lastActiveDate: { type: String },
 });
 
 export default mongoose.model("user", userschema);

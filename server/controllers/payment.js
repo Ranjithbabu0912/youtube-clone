@@ -1,6 +1,31 @@
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import users from "../Modals/Auth.js";
+import { sendInvoiceEmail } from "../utils/email.js";
+
+const PLAN_PRICES = {
+  bronze: 10,  // ₹10 = 1000 paise
+  silver: 50,  // ₹50 = 5000 paise
+  gold: 100,   // ₹100 = 10000 paise
+};
+
+const PLAN_METADATA = {
+  bronze: {
+    name: "Bronze",
+    price: 10,
+    limitDesc: "7 Minutes Daily",
+  },
+  silver: {
+    name: "Silver",
+    price: 50,
+    limitDesc: "10 Minutes Daily",
+  },
+  gold: {
+    name: "Gold",
+    price: 100,
+    limitDesc: "Unlimited Watching",
+  },
+};
 
 // Helper to instantiate Razorpay instance
 const getRazorpayInstance = () => {
@@ -13,14 +38,23 @@ const getRazorpayInstance = () => {
 };
 
 export const createOrder = async (req, res) => {
-  const { userId, amount = 9900 } = req.body; // Default: 9900 paise = 99 INR
+  const { userId, plan, amount: reqAmount } = req.body;
 
   try {
+    let amount = reqAmount || 9900; // default/fallback
+    if (plan && PLAN_PRICES[plan] !== undefined) {
+      amount = PLAN_PRICES[plan] * 100; // Convert INR to Paise
+    }
+
     const razorpay = getRazorpayInstance();
     const options = {
       amount, // amount in the smallest currency unit (paise)
       currency: "INR",
       receipt: `rcpt_${userId.toString().slice(-6)}_${Date.now()}`,
+      notes: {
+        userId: userId.toString(),
+        plan: plan || "premium",
+      }
     };
 
     const order = await razorpay.orders.create(options);
@@ -36,7 +70,7 @@ export const createOrder = async (req, res) => {
 };
 
 export const verifyPayment = async (req, res) => {
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, userId } = req.body;
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, userId, plan = "gold" } = req.body;
 
   try {
     const keySecret = process.env.RAZORPAY_KEY_SECRET || "mockkeysecret456";
@@ -50,16 +84,25 @@ export const verifyPayment = async (req, res) => {
     const isSignatureValid = expectedSignature === razorpay_signature;
 
     if (isSignatureValid) {
-      // Upgrade user to premium
+      // Upgrade user to selected plan and reset watch time for immediate fresh playback
       const updatedUser = await users.findByIdAndUpdate(
         userId,
-        { plan: "premium" },
+        { plan: plan, watchTime: 0 },
         { new: true }
       );
 
+      // Trigger asynchronous invoice email notification
+      const planMeta = PLAN_METADATA[plan] || { name: "Premium", price: 99, limitDesc: "Unlimited Watching" };
+      await sendInvoiceEmail(updatedUser.email, updatedUser.name || "Customer", {
+        name: planMeta.name,
+        price: planMeta.price,
+        limitDesc: planMeta.limitDesc,
+        paymentId: razorpay_payment_id,
+      });
+
       return res.status(200).json({
         success: true,
-        message: "Payment verified and upgraded to Premium successfully",
+        message: `Payment verified and upgraded to ${planMeta.name} successfully`,
         user: updatedUser,
       });
     } else {
@@ -74,27 +117,4 @@ export const verifyPayment = async (req, res) => {
   }
 };
 
-export const mockUpgrade = async (req, res) => {
-  const { userId } = req.body;
 
-  try {
-    const updatedUser = await users.findByIdAndUpdate(
-      userId,
-      { plan: "premium" },
-      { new: true }
-    );
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Upgraded to Premium (Simulated)",
-      user: updatedUser,
-    });
-  } catch (error) {
-    console.error("Error in mock upgrade:", error);
-    return res.status(500).json({ message: "Something went wrong" });
-  }
-};

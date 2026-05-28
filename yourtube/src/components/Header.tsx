@@ -133,17 +133,18 @@ const Header = () => {
           <Search className="w-5 h-5 text-gray-700" />
         </Button>
 
+        {(!user || (user.plan !== "gold" && user.plan !== "premium")) && (
+          <Button
+            onClick={() => setIsPremiumModalOpen(true)}
+            className="flex items-center gap-1 rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-3 h-8 shadow-sm mr-1.5"
+          >
+            <Crown className="w-3.5 h-3.5 fill-white" />
+            Upgrade Plan
+          </Button>
+        )}
+
         {user ? (
           <>
-            {user?.plan !== "premium" && (
-              <Button
-                onClick={() => setIsPremiumModalOpen(true)}
-                className="flex items-center gap-1 rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-3 h-8 shadow-sm mr-1.5"
-              >
-                <Crown className="w-3.5 h-3.5 fill-white" />
-                Go Premium
-              </Button>
-            )}
             <Button variant="ghost" size="icon" className="rounded-full hidden sm:inline-flex">
               <VideoIcon className="w-5 h-5" />
             </Button>
@@ -160,26 +161,39 @@ const Header = () => {
                     <AvatarImage src={user.image} />
                     <AvatarFallback>{user.name?.[0] || "U"}</AvatarFallback>
                   </Avatar>
-                  {user?.plan === "premium" && (
-                    <span className="absolute -top-1 -right-1 bg-red-600 rounded-full p-0.5 border border-white">
+                  {user?.plan && user.plan !== "free" && (
+                    <span className={`absolute -top-1 -right-1 rounded-full p-0.5 border border-white ${
+                      user.plan === "gold" || user.plan === "premium" ? "bg-yellow-500" :
+                      user.plan === "silver" ? "bg-slate-400" :
+                      "bg-amber-600"
+                    }`}>
                       <Crown className="w-2.5 h-2.5 text-white fill-white" />
                     </span>
                   )}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
-                {user?.plan === "premium" ? (
-                  <div className="px-3 py-2 flex items-center gap-1.5 text-xs font-bold text-red-600 border-b border-gray-100 bg-red-50/50 rounded-t-md">
-                    <Crown className="w-4 h-4 fill-red-600" />
-                    Premium Member
+                {user?.plan && user.plan !== "free" && (
+                  <div className={`px-3 py-2 flex items-center gap-1.5 text-xs font-bold border-b border-gray-100 rounded-t-md ${
+                    user.plan === "gold" || user.plan === "premium" ? "text-yellow-600 bg-yellow-50" :
+                    user.plan === "silver" ? "text-slate-600 bg-slate-100" :
+                    "text-amber-700 bg-amber-50"
+                  }`}>
+                    <Crown className={`w-4 h-4 ${
+                      user.plan === "gold" || user.plan === "premium" ? "fill-yellow-600 text-yellow-600" :
+                      user.plan === "silver" ? "fill-slate-600 text-slate-600" :
+                      "fill-amber-700 text-amber-700"
+                    }`} />
+                    {user.plan.charAt(0).toUpperCase() + user.plan.slice(1)} Member
                   </div>
-                ) : (
+                )}
+                {(!user?.plan || (user.plan !== "gold" && user.plan !== "premium")) && (
                   <DropdownMenuItem
                     onClick={() => setIsPremiumModalOpen(true)}
                     className="text-red-600 font-bold focus:text-red-700 focus:bg-red-50"
                   >
-                    <Crown className="w-4 h-4 mr-2" />
-                    Upgrade to Premium
+                    <Crown className="w-4 h-4 mr-2 text-red-600" />
+                    Upgrade Plan
                   </DropdownMenuItem>
                 )}
                 {user?.channelname ? (

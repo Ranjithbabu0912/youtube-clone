@@ -10,8 +10,8 @@ export const addDownload = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // If user is on the free plan, enforce the 1 download per 24 hours limit
-    if (user.plan !== "premium") {
+    // Enforce 1 download per 24 hours limit for Free and Bronze plans
+    if (user.plan !== "silver" && user.plan !== "gold" && user.plan !== "premium") {
       const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
       const downloadCount = await DownloadedVideo.countDocuments({
         userId,

@@ -1,5 +1,5 @@
 import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
-import { useState, useEffect, createContext, useContext } from "react";
+import { useState, useEffect, useRef, createContext, useContext } from "react";
 import { provider, auth } from "./firebase";
 import axiosInstance from "./axiosinstance";
 import OtpVerificationModal from "../components/OtpVerificationModal";
@@ -10,6 +10,7 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [otpStep, setOtpStep] = useState(null); // 'otp' | 'mobile' | null
   const [verificationData, setVerificationData] = useState(null);
+  const isLoggingInRef = useRef(false);
 
   useEffect(() => {
     const localUser = localStorage.getItem("user");
@@ -38,6 +39,8 @@ export const UserProvider = ({ children }) => {
   };
 
   const handlegooglesignin = async () => {
+    if (isLoggingInRef.current) return;
+    isLoggingInRef.current = true;
     try {
       const result = await signInWithPopup(auth, provider);
       const firebaseuser = result.user;
@@ -71,6 +74,8 @@ export const UserProvider = ({ children }) => {
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      isLoggingInRef.current = false;
     }
   };
 
@@ -79,6 +84,8 @@ export const UserProvider = ({ children }) => {
       if (firebaseuser) {
         const localUserStr = localStorage.getItem("user");
         if (localUserStr && localUserStr !== "undefined") return;
+        if (isLoggingInRef.current) return;
+        isLoggingInRef.current = true;
         try {
           let locationState = "Other";
           try {
@@ -110,6 +117,8 @@ export const UserProvider = ({ children }) => {
         } catch (error) {
           console.error(error);
           logout();
+        } finally {
+          isLoggingInRef.current = false;
         }
       }
     });

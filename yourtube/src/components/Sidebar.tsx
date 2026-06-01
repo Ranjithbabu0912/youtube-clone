@@ -31,7 +31,7 @@ const Sidebar = () => {
       )}
 
       <aside
-        className={`bg-white border-r transition-all duration-200 p-2 z-40 min-h-screen flex-shrink-0
+        className={`bg-background border-r border-border text-foreground transition-all duration-200 p-2 z-40 min-h-screen flex-shrink-0
           ${isOpen
             ? "w-64 fixed inset-y-0 left-0 md:relative md:translate-x-0"
             : "w-0 -translate-x-full md:w-16 md:translate-x-0 overflow-hidden md:block"
@@ -114,7 +114,7 @@ const Sidebar = () => {
           <nav className="space-y-3 flex flex-col items-center pt-2">
             <Link
               href="/"
-              className="flex flex-col items-center gap-1.5 text-[9px] font-medium text-gray-700 hover:bg-gray-100 hover:text-black w-full py-3 rounded-lg transition-colors"
+              className="flex flex-col items-center gap-1.5 text-[9px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground w-full py-3 rounded-lg transition-colors"
               title="Home"
             >
               <Home className="w-5 h-5" />
@@ -122,7 +122,7 @@ const Sidebar = () => {
             </Link>
             <Link
               href="/explore"
-              className="flex flex-col items-center gap-1.5 text-[9px] font-medium text-gray-700 hover:bg-gray-100 hover:text-black w-full py-3 rounded-lg transition-colors"
+              className="flex flex-col items-center gap-1.5 text-[9px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground w-full py-3 rounded-lg transition-colors"
               title="Explore"
             >
               <Compass className="w-5 h-5" />
@@ -130,7 +130,7 @@ const Sidebar = () => {
             </Link>
             <Link
               href="/subscriptions"
-              className="flex flex-col items-center gap-1.5 text-[9px] font-medium text-gray-700 hover:bg-gray-100 hover:text-black w-full py-3 rounded-lg transition-colors"
+              className="flex flex-col items-center gap-1.5 text-[9px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground w-full py-3 rounded-lg transition-colors"
               title="Subscriptions"
             >
               <PlaySquare className="w-5 h-5" />
@@ -140,7 +140,7 @@ const Sidebar = () => {
               <>
                 <Link
                   href="/history"
-                  className="flex flex-col items-center gap-1.5 text-[9px] font-medium text-gray-700 hover:bg-gray-100 hover:text-black w-full py-3 rounded-lg transition-colors"
+                  className="flex flex-col items-center gap-1.5 text-[9px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground w-full py-3 rounded-lg transition-colors"
                   title="History"
                 >
                   <History className="w-5 h-5" />
@@ -148,7 +148,7 @@ const Sidebar = () => {
                 </Link>
                 <Link
                   href="/downloads"
-                  className="flex flex-col items-center gap-1.5 text-[9px] font-medium text-gray-700 hover:bg-gray-100 hover:text-black w-full py-3 rounded-lg transition-colors"
+                  className="flex flex-col items-center gap-1.5 text-[9px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground w-full py-3 rounded-lg transition-colors"
                   title="Downloads"
                 >
                   <Download className="w-5 h-5" />

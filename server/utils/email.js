@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import twilio from "twilio";
 
 export const sendInvoiceEmail = async (userEmail, userName, planDetails) => {
   const emailUser = process.env.EMAIL_USER;
@@ -150,3 +151,107 @@ export const sendInvoiceEmail = async (userEmail, userName, planDetails) => {
     return { success: false, error: error.message };
   }
 };
+
+export const sendOTPEmail = async (userEmail, otp) => {
+  const emailUser = process.env.EMAIL_USER;
+  const emailPass = process.env.EMAIL_PASS;
+
+  let transporter;
+  let isTestAccount = false;
+
+  if (emailUser && emailPass) {
+    transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: emailUser,
+        pass: emailPass,
+      },
+    });
+  } else {
+    try {
+      const testAccount = await nodemailer.createTestAccount();
+      transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false,
+        auth: {
+          user: testAccount.user,
+          pass: testAccount.pass,
+        },
+      });
+      isTestAccount = true;
+    } catch (err) {
+      console.warn("Failed to create Ethereal SMTP account. Falling back to email console log simulation.");
+      console.log(`========================================`);
+      console.log(`[OTP SENT TO EMAIL] To: ${userEmail}`);
+      console.log(`[OTP MESSAGE] Your verification code is: ${otp}`);
+      console.log(`========================================`);
+      return { success: true, simulated: true };
+    }
+  }
+
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 5px; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #EF4444;">YourTube Security</h2>
+      <p>Hello,</p>
+      <p>Your one-time password (OTP) for secure login verification is:</p>
+      <div style="font-size: 32px; font-weight: bold; letter-spacing: 4px; color: #EF4444; padding: 15px; background-color: #FEF2F2; text-align: center; border-radius: 6px; margin: 20px 0;">
+        ${otp}
+      </div>
+      <p>This verification code is valid for 5 minutes.</p>
+      <p>If you did not request this, please secure your account immediately.</p>
+      <p>Thanks,<br/>The YourTube Security Team</p>
+    </div>
+  `;
+
+  try {
+    const info = await transporter.sendMail({
+      from: '"YourTube Security" <security@yourtube.com>',
+      to: userEmail,
+      subject: `YourTube Secure Verification OTP: ${otp}`,
+      html: htmlContent,
+    });
+
+    console.log(`[REAL OTP Email Sent] -> To: ${userEmail}, OTP: ${otp}`);
+    if (isTestAccount) {
+      console.log("-----------------------------------------");
+      console.log("OTP Ethereal Email Preview URL:");
+      console.log(nodemailer.getTestMessageUrl(info));
+      console.log("-----------------------------------------");
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("Error sending OTP email:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const sendOTPSMS = async (mobileNumber, otp) => {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const twilioNumber = process.env.TWILIO_PHONE_NUMBER;
+
+  if (!accountSid || !authToken || !twilioNumber) {
+    console.warn("Twilio credentials not fully configured in env. Falling back to SMS console log simulation.");
+    console.log(`========================================`);
+    console.log(`[OTP SENT TO MOBILE] To: ${mobileNumber}`);
+    console.log(`[OTP MESSAGE] Your verification code is: ${otp}`);
+    console.log(`========================================`);
+    return { success: true, simulated: true };
+  }
+
+  const client = twilio(accountSid, authToken);
+  try {
+    const message = await client.messages.create({
+      body: `Your verification code is: ${otp}. Valid for 5 minutes.`,
+      from: twilioNumber,
+      to: mobileNumber,
+    });
+    console.log(`[REAL OTP SMS Sent via Twilio] -> To: ${mobileNumber}, Message SID: ${message.sid}`);
+    return { success: true, sid: message.sid };
+  } catch (error) {
+    console.error("Error sending SMS via Twilio:", error);
+    throw error;
+  }
+};
+

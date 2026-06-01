@@ -9,6 +9,9 @@ const userschema = mongoose.Schema({
   plan: { type: String, default: "free", enum: ["free", "bronze", "silver", "gold", "premium"] },
   watchTime: { type: Number, default: 0 },
   lastActiveDate: { type: String },
+  mobile: { type: String },
+  otp: { type: String },
+  otpExpiry: { type: Date },
 });
 
 export default mongoose.model("user", userschema);

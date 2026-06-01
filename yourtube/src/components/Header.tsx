@@ -43,14 +43,14 @@ const Header = () => {
   // Mobile-only active search layout
   if (isMobileSearch) {
     return (
-      <header className="flex items-center justify-between px-3 py-2 bg-white border-b gap-2 h-14">
+      <header className="flex items-center justify-between px-3 py-2 bg-background border-b border-border gap-2 h-14">
         <Button
           variant="ghost"
           size="icon"
           className="rounded-full"
           onClick={() => setIsMobileSearch(false)}
         >
-          <ArrowLeft className="w-5 h-5 text-gray-700" />
+          <ArrowLeft className="w-5 h-5 text-foreground" />
         </Button>
         <form onSubmit={handleSearch} className="flex flex-1 items-center gap-1.5">
           <Input
@@ -60,12 +60,12 @@ const Header = () => {
             autoFocus
             onKeyPress={handleKeypress}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="rounded-full flex-1 h-9 px-4 border border-gray-300 focus-visible:ring-0 focus:border-black"
+            className="rounded-full flex-1 h-9 px-4 border border-border bg-background text-foreground focus-visible:ring-0"
           />
           <Button
             type="submit"
             size="icon"
-            className="rounded-full h-9 w-9 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 border-l-0"
+            className="rounded-full h-9 w-9 bg-muted hover:bg-accent text-foreground border border-border border-l-0"
           >
             <Search className="w-4 h-4" />
           </Button>
@@ -78,7 +78,7 @@ const Header = () => {
   }
 
   return (
-    <header className="flex items-center justify-between px-4 py-2 bg-white border-b h-14">
+    <header className="flex items-center justify-between px-4 py-2 bg-background border-b border-border h-14">
       {/* Left logo area */}
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" className="rounded-full" onClick={toggle}>
@@ -107,16 +107,16 @@ const Header = () => {
             value={searchQuery}
             onKeyPress={handleKeypress}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="rounded-l-full border-r-0 focus-visible:ring-0 h-9"
+            className="rounded-l-full border-r-0 focus-visible:ring-0 h-9 bg-background text-foreground"
           />
           <Button
             type="submit"
-            className="rounded-r-full px-5 bg-gray-50 hover:bg-gray-100 text-gray-600 border border-l-0 h-9"
+            className="rounded-r-full px-5 bg-muted hover:bg-accent text-muted-foreground border border-border border-l-0 h-9"
           >
             <Search className="w-4 h-4" />
           </Button>
         </div>
-        <Button variant="ghost" size="icon" className="rounded-full h-9 w-9 bg-gray-50">
+        <Button variant="ghost" size="icon" className="rounded-full h-9 w-9 bg-muted text-foreground hover:bg-accent">
           <Mic className="w-4 h-4" />
         </Button>
       </form>
@@ -130,7 +130,7 @@ const Header = () => {
           className="rounded-full md:hidden"
           onClick={() => setIsMobileSearch(true)}
         >
-          <Search className="w-5 h-5 text-gray-700" />
+          <Search className="w-5 h-5 text-foreground" />
         </Button>
 
         {(!user || (user.plan !== "gold" && user.plan !== "premium")) && (
@@ -232,7 +232,7 @@ const Header = () => {
         ) : (
           <>
             <Button
-              className="flex items-center gap-1.5 rounded-full border px-3 h-9 text-xs font-semibold bg-white text-blue-600 border-blue-200 hover:bg-blue-50"
+              className="flex items-center gap-1.5 rounded-full border px-3 h-9 text-xs font-semibold bg-background text-foreground border-border hover:bg-accent"
               onClick={handlegooglesignin}
             >
               <User className="w-4 h-4" />

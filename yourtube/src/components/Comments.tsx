@@ -210,7 +210,7 @@ const Comments = ({ videoId }: { videoId: any }) => {
   }
 
   return (
-    <div className="space-y-6 max-w-full">
+    <div id="comments-section" className="space-y-6 max-w-full">
       <h2 className="text-xl font-semibold text-gray-900">
         {(comments?.length || 0)} Comments
       </h2>

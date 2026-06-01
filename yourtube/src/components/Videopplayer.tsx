@@ -5,17 +5,17 @@ import { useUser } from "@/lib/AuthContext";
 import axiosInstance from "@/lib/axiosinstance";
 import { Button } from "./ui/button";
 import PremiumModal from "./PremiumModal";
-import { 
-  Crown, 
-  AlertTriangle, 
-  Play, 
-  Pause, 
-  FastForward, 
-  Rewind, 
-  SkipForward, 
-  MessageSquare, 
-  X, 
-  Sparkles 
+import {
+  Crown,
+  AlertTriangle,
+  Play,
+  Pause,
+  FastForward,
+  Rewind,
+  SkipForward,
+  MessageSquare,
+  X,
+  Sparkles
 } from "lucide-react";
 import { toast } from "sonner";
 import { getMediaUrl } from "@/lib/utils";
@@ -391,7 +391,7 @@ export default function VideoPlayer({ video, allVideos }: VideoPlayerProps) {
         {/* Visual HUD Feedback Overlay */}
         {hudMessage.visible && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/20 pointer-events-none z-30 transition-opacity duration-200">
-            <div className="bg-black/80 backdrop-blur-sm px-5 py-3.5 rounded-2xl flex flex-col items-center gap-2 border border-white/10 shadow-2xl transition-all transform scale-100">
+            <div className="px-5 py-3.5 rounded-2xl flex flex-col items-center gap-2  shadow-2xl transition-all transform scale-100">
               {hudMessage.icon === "play" && <Play className="w-8 h-8 text-white fill-white" />}
               {hudMessage.icon === "pause" && <Pause className="w-8 h-8 text-white fill-white" />}
               {hudMessage.icon === "forward" && <FastForward className="w-8 h-8 text-white fill-white" />}
@@ -399,7 +399,7 @@ export default function VideoPlayer({ video, allVideos }: VideoPlayerProps) {
               {hudMessage.icon === "skip" && <SkipForward className="w-8 h-8 text-white fill-white" />}
               {hudMessage.icon === "comments" && <MessageSquare className="w-8 h-8 text-white fill-white" />}
               {hudMessage.icon === "close" && <X className="w-8 h-8 text-red-500 stroke-[3px]" />}
-              
+
               <span className="text-white text-xs font-bold tracking-wider select-none">
                 {hudMessage.text}
               </span>
@@ -413,11 +413,11 @@ export default function VideoPlayer({ video, allVideos }: VideoPlayerProps) {
             <div className="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-center mb-4 border border-yellow-200 shadow-md">
               <Crown className="w-7 h-7 text-yellow-600 animate-bounce" />
             </div>
-            
+
             <h2 className="text-xl font-bold text-white mb-2 tracking-tight">
               Daily Viewing Limit Reached
             </h2>
-            
+
             <p className="text-xs text-gray-300 max-w-sm mb-6 leading-relaxed">
               You've reached your daily allowance of {limit / 60} minutes for the{" "}
               <span className="font-semibold text-yellow-500 capitalize">
@@ -434,7 +434,7 @@ export default function VideoPlayer({ video, allVideos }: VideoPlayerProps) {
                 <Sparkles className="w-4 h-4 fill-black text-black" />
                 Upgrade Plan
               </Button>
-              
+
               {!user && (
                 <Button
                   onClick={handlegooglesignin}

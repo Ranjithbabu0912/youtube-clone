@@ -211,7 +211,7 @@ const Comments = ({ videoId }: { videoId: any }) => {
 
   return (
     <div id="comments-section" className="space-y-6 max-w-full">
-      <h2 className="text-xl font-semibold text-gray-900">
+      <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
         {(comments?.length || 0)} Comments
       </h2>
 
@@ -286,7 +286,7 @@ const Comments = ({ videoId }: { videoId: any }) => {
 
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                    <span className="font-semibold text-sm text-gray-900 truncate">
+                    <span className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 truncate">
                       {comment.usercommented}
                     </span>
                     <span className="text-xs text-gray-500 truncate font-medium">
@@ -297,7 +297,7 @@ const Comments = ({ videoId }: { videoId: any }) => {
                     </span>
                   </div>
 
-                  <p className="text-sm text-gray-800 break-words leading-relaxed whitespace-pre-wrap">
+                  <p className="text-sm text-zinc-800 dark:text-zinc-200 break-words leading-relaxed whitespace-pre-wrap">
                     {comment.commentbody}
                   </p>
 
@@ -350,7 +350,7 @@ const Comments = ({ videoId }: { videoId: any }) => {
                       <select
                         value={targetLang}
                         onChange={(e) => handleLanguageChange(comment._id, e.target.value)}
-                        className="text-xs bg-white border border-gray-200 rounded px-1.5 py-0.5 text-gray-600 focus:outline-none focus:border-gray-400 max-w-[85px] sm:max-w-none"
+                        className="text-xs bg-background dark:bg-zinc-800 border border-border rounded px-1.5 py-0.5 text-foreground focus:outline-none focus:border-zinc-400 max-w-[85px] sm:max-w-none"
                       >
                         {availableLanguages.map((lang) => (
                           <option key={lang.code} value={lang.code}>

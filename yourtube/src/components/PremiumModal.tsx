@@ -44,8 +44,8 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
       name: "Bronze",
       price: 10,
       limitText: "7 Min Daily Watching",
-      colorClass: "border-amber-500 bg-amber-50/40 text-amber-950 ring-amber-500",
-      inactiveColorClass: "border-amber-200 hover:border-amber-300 bg-amber-50/5 text-amber-900",
+      colorClass: "border-amber-500 bg-amber-50/40 dark:bg-amber-950/20 text-amber-950 dark:text-amber-100 ring-amber-500",
+      inactiveColorClass: "border-amber-200 dark:border-amber-900/60 hover:border-amber-300 bg-amber-50/5 text-amber-900 dark:text-amber-300",
       accentColor: "bg-amber-600",
       themeColor: "#D97706",
       features: [
@@ -60,8 +60,8 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
       name: "Silver",
       price: 50,
       limitText: "10 Min Daily Watching",
-      colorClass: "border-slate-400 bg-slate-100/50 text-slate-950 ring-slate-400",
-      inactiveColorClass: "border-slate-200 hover:border-slate-300 bg-slate-50/5 text-slate-900",
+      colorClass: "border-slate-400 bg-slate-100/50 dark:bg-slate-900/20 text-slate-950 dark:text-slate-100 ring-slate-400",
+      inactiveColorClass: "border-slate-200 dark:border-slate-800 hover:border-slate-300 bg-slate-50/5 text-slate-900 dark:text-slate-300",
       accentColor: "bg-slate-600",
       themeColor: "#475569",
       features: [
@@ -76,8 +76,8 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
       name: "Gold",
       price: 100,
       limitText: "Unlimited Watching",
-      colorClass: "border-yellow-500 bg-yellow-50/50 text-yellow-950 ring-yellow-500 shadow-yellow-100 shadow-lg",
-      inactiveColorClass: "border-yellow-200 hover:border-yellow-300 bg-yellow-50/5 text-yellow-900",
+      colorClass: "border-yellow-500 bg-yellow-50/50 dark:bg-yellow-950/20 text-yellow-950 dark:text-yellow-100 ring-yellow-500 shadow-yellow-100/10 shadow-lg",
+      inactiveColorClass: "border-yellow-200 dark:border-yellow-900/60 hover:border-yellow-300 bg-yellow-50/5 text-yellow-900 dark:text-yellow-300",
       accentColor: "bg-yellow-600",
       themeColor: "#CA8A04",
       features: [
@@ -178,15 +178,15 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[700px] p-6 rounded-2xl border bg-white text-black shadow-2xl" aria-describedby={undefined}>
+      <DialogContent className="sm:max-w-[700px] p-6 rounded-2xl border bg-background text-foreground shadow-2xl" aria-describedby={undefined}>
         <DialogHeader className="text-center space-y-2">
-          <div className="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-2">
+          <div className="mx-auto w-12 h-12 bg-red-100 dark:bg-red-950/40 rounded-full flex items-center justify-center mb-2">
             <Crown className="w-6 h-6 text-red-600 animate-pulse" />
           </div>
           <DialogTitle className="text-2xl font-bold tracking-tight">
             Upgrade Your Experience
           </DialogTitle>
-          <DialogDescription className="text-gray-600 text-sm">
+          <DialogDescription className="text-muted-foreground text-sm">
             Choose the plan that fits your viewing needs. Get badge recognition, premium downloads, and ad-free access.
           </DialogDescription>
         </DialogHeader>
@@ -229,14 +229,14 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
 
                   <div className="mb-2">
                     <span className="text-2xl font-extrabold">₹{p.price}</span>
-                    <span className="text-xs text-gray-500">/mo</span>
+                    <span className="text-xs text-muted-foreground">/mo</span>
                   </div>
 
-                  <p className="text-[11px] font-bold text-gray-700 mb-3">{p.limitText}</p>
+                  <p className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 mb-3">{p.limitText}</p>
 
                   <ul className="space-y-1.5">
                     {p.features.map((f, i) => (
-                      <li key={i} className="flex items-start gap-1.5 text-[10px] text-gray-600">
+                      <li key={i} className="flex items-start gap-1.5 text-[10px] text-zinc-600 dark:text-zinc-400">
                         <Check className="w-3.5 h-3.5 text-green-600 flex-shrink-0" />
                         <span>{f}</span>
                       </li>
@@ -249,15 +249,15 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
         </div>
 
         {/* Selected Plan Summary Banner */}
-        <div className="bg-gradient-to-r from-red-50 to-orange-50 p-4 rounded-xl border border-red-100 flex items-center justify-between mt-1">
+        <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20 p-4 rounded-xl border border-red-100 dark:border-red-900/60 flex items-center justify-between mt-1">
           <div>
-            <p className="text-sm font-semibold text-red-800 flex items-center gap-1">
+            <p className="text-sm font-semibold text-red-800 dark:text-red-300 flex items-center gap-1">
               <Sparkles className="w-4 h-4 text-orange-500 fill-orange-500 animate-spin" style={{ animationDuration: '3s' }} />
               Selected: {currentPlanMeta.name} Plan
             </p>
-            <p className="text-xs text-red-600 mt-0.5">{currentPlanMeta.limitText} & Benefits</p>
+            <p className="text-xs text-red-600 dark:text-red-400 mt-0.5">{currentPlanMeta.limitText} & Benefits</p>
           </div>
-          <p className="text-xl font-bold text-red-700">₹{currentPlanMeta.price}/mo</p>
+          <p className="text-xl font-bold text-red-700 dark:text-red-300">₹{currentPlanMeta.price}/mo</p>
         </div>
 
         {/* CTA Buttons */}
@@ -278,7 +278,7 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
           <Button
             variant="ghost"
             onClick={onClose}
-            className="w-full text-xs text-gray-500 hover:text-black py-1 rounded-full"
+            className="w-full text-xs text-muted-foreground hover:text-foreground py-1 rounded-full"
           >
             Maybe Later
           </Button>

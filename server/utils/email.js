@@ -240,9 +240,16 @@ export const sendOTPSMS = async (mobileNumber, otp) => {
     return { success: true, simulated: true };
   }
 
+  // Auto-format 10-digit numbers to E.164 format (+91 for India) if prefix is missing
+  let formattedNumber = mobileNumber.trim();
+  const digitsOnly = formattedNumber.replace(/\D/g, "");
+  if (digitsOnly.length === 10 && !formattedNumber.startsWith("+")) {
+    formattedNumber = `+91${digitsOnly}`;
+  }
+
   // Prevent Twilio crash when 'To' and 'From' are the same
   const cleanNumber = (num) => (num ? num.toString().replace(/\D/g, "") : "");
-  const cleanTo = cleanNumber(mobileNumber);
+  const cleanTo = cleanNumber(formattedNumber);
   const cleanFrom = cleanNumber(twilioNumber);
   const isSameNumber =
     cleanTo === cleanFrom ||
@@ -253,7 +260,7 @@ export const sendOTPSMS = async (mobileNumber, otp) => {
   if (isSameNumber) {
     console.warn("Twilio 'To' and 'From' numbers are identical or matching. Falling back to simulated log.");
     console.log(`========================================`);
-    console.log(`[OTP SENT TO MOBILE (SIMULATED due to identical To/From)] To: ${mobileNumber}`);
+    console.log(`[OTP SENT TO MOBILE (SIMULATED due to identical To/From)] To: ${formattedNumber}`);
     console.log(`[OTP MESSAGE] Your verification code is: ${otp}`);
     console.log(`========================================`);
     return { success: true, simulated: true };
@@ -264,14 +271,14 @@ export const sendOTPSMS = async (mobileNumber, otp) => {
     const message = await client.messages.create({
       body: `Your verification code is: ${otp}. Valid for 5 minutes.`,
       from: twilioNumber,
-      to: mobileNumber,
+      to: formattedNumber,
     });
-    console.log(`[REAL OTP SMS Sent via Twilio] -> To: ${mobileNumber}, Message SID: ${message.sid}`);
+    console.log(`[REAL OTP SMS Sent via Twilio] -> To: ${formattedNumber}, Message SID: ${message.sid}`);
     return { success: true, sid: message.sid };
   } catch (error) {
     console.error("Error sending SMS via Twilio (falling back to simulation):", error);
     console.log(`========================================`);
-    console.log(`[OTP SENT TO MOBILE (FALLBACK SIMULATION)] To: ${mobileNumber}`);
+    console.log(`[OTP SENT TO MOBILE (FALLBACK SIMULATION)] To: ${formattedNumber}`);
     console.log(`[OTP MESSAGE] Your verification code is: ${otp}`);
     console.log(`========================================`);
     return { success: true, simulated: true, error: error.message };

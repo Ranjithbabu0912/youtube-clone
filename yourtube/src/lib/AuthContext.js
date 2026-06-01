@@ -45,7 +45,7 @@ export const UserProvider = ({ children }) => {
       const result = await signInWithPopup(auth, provider);
       const firebaseuser = result.user;
 
-      let locationState = "Delhi";
+      let locationState = "Other";
       try {
         const geoRes = await fetch("https://ipapi.co/json/");
         const geoData = await geoRes.json();

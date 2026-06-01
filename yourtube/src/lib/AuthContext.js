@@ -44,9 +44,9 @@ export const UserProvider = ({ children }) => {
 
       let locationState = "Other";
       try {
-        const geoRes = await fetch("https://ip-api.com/json/");
+        const geoRes = await fetch("https://ipapi.co/json/");
         const geoData = await geoRes.json();
-        locationState = geoData.regionName || "Other";
+        locationState = geoData.region || geoData.regionName || "Other";
       } catch (err) {
         console.error("Geo fetch error:", err);
       }
@@ -82,9 +82,9 @@ export const UserProvider = ({ children }) => {
         try {
           let locationState = "Other";
           try {
-            const geoRes = await fetch("https://ip-api.com/json/");
+            const geoRes = await fetch("https://ipapi.co/json/");
             const geoData = await geoRes.json();
-            locationState = geoData.regionName || "Other";
+            locationState = geoData.region || geoData.regionName || "Other";
           } catch (err) {
             console.error("Geo fetch error:", err);
           }

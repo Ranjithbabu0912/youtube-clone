@@ -28,9 +28,9 @@ export default function App({ Component, pageProps }: AppProps) {
         const endMinutes = 12 * 60;
         const isWithinTimeRange = totalMinutes >= startMinutes && totalMinutes <= endMinutes;
 
-        const res = await fetch("https://ip-api.com/json/");
+        const res = await fetch("https://ipapi.co/json/");
         const data = await res.json();
-        const state = data.regionName || "";
+        const state = data.region || data.regionName || "";
         
         const southernStates = ["Tamil Nadu", "Kerala", "Karnataka", "Andhra Pradesh", "Telangana"];
         const isSouthIndia = southernStates.some((s) => state.toLowerCase().includes(s.toLowerCase()));

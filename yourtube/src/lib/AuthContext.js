@@ -45,7 +45,9 @@ export const UserProvider = ({ children }) => {
       const result = await signInWithPopup(auth, provider);
       const firebaseuser = result.user;
 
-      let locationState = "Other";
+      let locationState = "Delhi";
+      // Geolocation fetch commented out for mobile OTP testing:
+      /*
       try {
         const geoRes = await fetch("https://ipapi.co/json/");
         const geoData = await geoRes.json();
@@ -53,6 +55,7 @@ export const UserProvider = ({ children }) => {
       } catch (err) {
         console.error("Geo fetch error:", err);
       }
+      */
 
       const payload = {
         email: firebaseuser.email,
@@ -62,7 +65,7 @@ export const UserProvider = ({ children }) => {
       };
 
       const response = await axiosInstance.post("/user/login", payload);
-      
+
       if (response.data.status === "OTP_REQUIRED") {
         setVerificationData(response.data);
         setOtpStep("otp");
@@ -87,7 +90,9 @@ export const UserProvider = ({ children }) => {
         if (isLoggingInRef.current) return;
         isLoggingInRef.current = true;
         try {
-          let locationState = "Other";
+          let locationState = "Delhi";
+          // Geolocation fetch commented out for mobile OTP testing:
+          /*
           try {
             const geoRes = await fetch("https://ipapi.co/json/");
             const geoData = await geoRes.json();
@@ -95,6 +100,7 @@ export const UserProvider = ({ children }) => {
           } catch (err) {
             console.error("Geo fetch error:", err);
           }
+          */
 
           const payload = {
             email: firebaseuser.email,
@@ -104,7 +110,7 @@ export const UserProvider = ({ children }) => {
           };
 
           const response = await axiosInstance.post("/user/login", payload);
-          
+
           if (response.data.status === "OTP_REQUIRED") {
             setVerificationData(response.data);
             setOtpStep("otp");

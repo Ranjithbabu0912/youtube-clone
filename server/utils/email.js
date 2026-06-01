@@ -240,6 +240,25 @@ export const sendOTPSMS = async (mobileNumber, otp) => {
     return { success: true, simulated: true };
   }
 
+  // Prevent Twilio crash when 'To' and 'From' are the same
+  const cleanNumber = (num) => (num ? num.toString().replace(/\D/g, "") : "");
+  const cleanTo = cleanNumber(mobileNumber);
+  const cleanFrom = cleanNumber(twilioNumber);
+  const isSameNumber =
+    cleanTo === cleanFrom ||
+    (cleanTo.length >= 10 &&
+      cleanFrom.length >= 10 &&
+      (cleanTo.endsWith(cleanFrom) || cleanFrom.endsWith(cleanTo)));
+
+  if (isSameNumber) {
+    console.warn("Twilio 'To' and 'From' numbers are identical or matching. Falling back to simulated log.");
+    console.log(`========================================`);
+    console.log(`[OTP SENT TO MOBILE (SIMULATED due to identical To/From)] To: ${mobileNumber}`);
+    console.log(`[OTP MESSAGE] Your verification code is: ${otp}`);
+    console.log(`========================================`);
+    return { success: true, simulated: true };
+  }
+
   const client = twilio(accountSid, authToken);
   try {
     const message = await client.messages.create({

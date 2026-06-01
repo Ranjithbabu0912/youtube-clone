@@ -46,8 +46,6 @@ export const UserProvider = ({ children }) => {
       const firebaseuser = result.user;
 
       let locationState = "Delhi";
-      // Geolocation fetch commented out for mobile OTP testing:
-      /*
       try {
         const geoRes = await fetch("https://ipapi.co/json/");
         const geoData = await geoRes.json();
@@ -55,7 +53,6 @@ export const UserProvider = ({ children }) => {
       } catch (err) {
         console.error("Geo fetch error:", err);
       }
-      */
 
       const payload = {
         email: firebaseuser.email,
@@ -91,8 +88,6 @@ export const UserProvider = ({ children }) => {
         isLoggingInRef.current = true;
         try {
           let locationState = "Delhi";
-          // Geolocation fetch commented out for mobile OTP testing:
-          /*
           try {
             const geoRes = await fetch("https://ipapi.co/json/");
             const geoData = await geoRes.json();
@@ -100,7 +95,6 @@ export const UserProvider = ({ children }) => {
           } catch (err) {
             console.error("Geo fetch error:", err);
           }
-          */
 
           const payload = {
             email: firebaseuser.email,

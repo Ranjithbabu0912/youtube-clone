@@ -1,7 +1,8 @@
-"use clinet";
+"use client";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { Avatar, AvatarFallback } from "./ui/avatar";
+import { getMediaUrl } from "@/lib/utils";
 
 const videos = "/video/vdo.mp4";
 export default function VideoCard({ video }: any) {
@@ -10,7 +11,7 @@ export default function VideoCard({ video }: any) {
       <div className="space-y-3">
         <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-100">
           <video
-            src={`${process.env.BACKEND_URL}/${video?.filepath}`}
+            src={getMediaUrl(video?.filepath)}
             className="object-cover group-hover:scale-105 transition-transform duration-200"
           />
           <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1 rounded">

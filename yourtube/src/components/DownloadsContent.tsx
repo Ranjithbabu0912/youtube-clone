@@ -14,6 +14,7 @@ import {
 import { useUser } from "@/lib/AuthContext";
 import axiosInstance from "@/lib/axiosinstance";
 import { toast } from "sonner";
+import { getMediaUrl } from "@/lib/utils";
 
 export default function DownloadsContent() {
   const [downloads, setDownloads] = useState<any[]>([]);
@@ -116,7 +117,7 @@ export default function DownloadsContent() {
               >
                 <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden shadow-sm">
                   <video
-                    src={`${process.env.BACKEND_URL}/${item.videoId.filepath}`}
+                    src={getMediaUrl(item.videoId.filepath)}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                   />
                   <div className="absolute inset-0 bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">

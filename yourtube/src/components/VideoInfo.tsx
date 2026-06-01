@@ -14,6 +14,7 @@ import { useUser } from "@/lib/AuthContext";
 import axiosInstance from "@/lib/axiosinstance";
 import { toast } from "sonner";
 import PremiumModal from "./PremiumModal";
+import { getMediaUrl } from "@/lib/utils";
 
 const VideoInfo = ({ video }: any) => {
   const [likes, setlikes] = useState(video.Like || 0);
@@ -50,7 +51,7 @@ const VideoInfo = ({ video }: any) => {
       toast.success("Download started...");
 
       // 2. Fetch and trigger direct local download in browser
-      const fileUrl = `${process.env.BACKEND_URL}/${video.filepath}`;
+      const fileUrl = getMediaUrl(video.filepath);
       const response = await fetch(fileUrl);
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);

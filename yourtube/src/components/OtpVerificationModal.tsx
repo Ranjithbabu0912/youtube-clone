@@ -184,18 +184,43 @@ export default function OtpVerificationModal({
                 "Send Verification Code"
               )}
             </Button>
+            {verificationData?.method === "mobile" && verificationData?.destination && (
+              <div className="text-center pt-1">
+                <button
+                  type="button"
+                  onClick={() => setStep("otp")}
+                  className="text-xs font-semibold text-muted-foreground hover:text-foreground hover:underline bg-transparent border-0 cursor-pointer"
+                >
+                  Cancel & Go Back
+                </button>
+              </div>
+            )}
           </form>
         ) : (
           <form onSubmit={handleVerifyOtp} className="space-y-4 pt-4">
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
-                {verificationData?.method === "email" ? (
-                  <Mail className="w-3.5 h-3.5" />
-                ) : (
-                  <Phone className="w-3.5 h-3.5" />
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                  {verificationData?.method === "email" ? (
+                    <Mail className="w-3.5 h-3.5" />
+                  ) : (
+                    <Phone className="w-3.5 h-3.5" />
+                  )}
+                  Verification Destination: <span className="font-bold text-foreground">{verificationData?.destination}</span>
+                </label>
+                {verificationData?.method === "mobile" && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStep("mobile");
+                      setMobileNumber(verificationData.destination || "");
+                    }}
+                    className="text-xs font-semibold text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 underline cursor-pointer bg-transparent border-0"
+                  >
+                    Change
+                  </button>
                 )}
-                Verification Destination: <span className="font-bold text-foreground">{verificationData?.destination}</span>
-              </label>
+              </div>
               <Input
                 type="text"
                 placeholder="Enter 6-digit OTP"

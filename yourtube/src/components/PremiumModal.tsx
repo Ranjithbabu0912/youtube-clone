@@ -124,8 +124,8 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
       }
 
       // Calculate localized price based on Billing Cycle
-      const finalPrice = isAnnual 
-        ? Math.round(currentPlanMeta.price * 12 * 0.8) 
+      const finalPrice = isAnnual
+        ? Math.round(currentPlanMeta.price * 12 * 0.8)
         : currentPlanMeta.price;
 
       // 1. Create order on backend (specifying plan type and billing cycle)
@@ -169,7 +169,7 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
             }
           } catch (err: any) {
             console.error(err);
-            toast.error(err.response?.data?.message || "Payment verification failed");
+            toast.error(err.response?.data?.message || "Payment Verification failed");
           } finally {
             setLoading(false);
           }
@@ -216,25 +216,22 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
           <div className="bg-zinc-100 dark:bg-zinc-800/80 p-1 rounded-full flex items-center relative w-full max-w-[280px] mx-auto border border-zinc-200 dark:border-zinc-700/40">
             <button
               onClick={() => setIsAnnual(false)}
-              className={`flex-1 py-1.5 text-center rounded-full text-xs font-bold transition-all relative z-10 ${
-                !isAnnual ? "text-zinc-950 dark:text-white" : "text-zinc-500 dark:text-zinc-400"
-              }`}
+              className={`flex-1 py-1.5 text-center rounded-full text-xs font-bold transition-all relative z-10 ${!isAnnual ? "text-zinc-950 dark:text-white" : "text-zinc-500 dark:text-zinc-400"
+                }`}
             >
               Monthly
             </button>
             <button
               onClick={() => setIsAnnual(true)}
-              className={`flex-1 py-1.5 text-center rounded-full text-xs font-bold transition-all relative z-10 ${
-                isAnnual ? "text-zinc-950 dark:text-white font-extrabold" : "text-zinc-500 dark:text-zinc-400"
-              }`}
+              className={`flex-1 py-1.5 text-center rounded-full text-xs font-bold transition-all relative z-10 ${isAnnual ? "text-zinc-950 dark:text-white font-extrabold" : "text-zinc-500 dark:text-zinc-400"
+                }`}
             >
               Annually
               <span className="block text-[8px] text-teal-500 font-normal">Save up to 20%</span>
             </button>
             <div
-              className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-background shadow rounded-full transition-all duration-300 ${
-                isAnnual ? "left-[50%]" : "left-1"
-              }`}
+              className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-background shadow rounded-full transition-all duration-300 ${isAnnual ? "left-[50%]" : "left-1"
+                }`}
             />
           </div>
           <span className="block text-[9px] text-muted-foreground/80 mt-2 font-medium">
@@ -247,7 +244,7 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
           {plans.map((p) => {
             const isSelected = selectedPlan === p.id;
             const isPlanActive = currentPlan === p.id;
-            
+
             return (
               <div
                 key={p.id}
@@ -256,34 +253,31 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
                     setSelectedPlan(p.id);
                   }
                 }}
-                className={`border rounded-2xl p-3.5 transition-all duration-200 relative ${
-                  p.id === "free" ? "cursor-default opacity-85" : "cursor-pointer"
-                } ${
-                  isSelected
+                className={`border rounded-2xl p-3.5 transition-all duration-200 relative ${p.id === "free" ? "cursor-default opacity-85" : "cursor-pointer"
+                  } ${isSelected
                     ? "border-teal-500/80 bg-teal-500/5 dark:bg-teal-500/5 ring-1 ring-teal-500/40"
                     : isPlanActive
-                    ? "border-zinc-300 dark:border-zinc-800 bg-zinc-150/10"
-                    : "border-zinc-200 dark:border-zinc-800/85 hover:border-zinc-300 dark:hover:border-zinc-700 bg-background"
-                }`}
+                      ? "border-zinc-300 dark:border-zinc-800 bg-zinc-150/10"
+                      : "border-zinc-200 dark:border-zinc-800/85 hover:border-zinc-300 dark:hover:border-zinc-700 bg-background"
+                  }`}
               >
                 {p.id === "gold" && (
                   <span className="absolute -top-2 right-4 bg-gradient-to-r from-yellow-500 to-amber-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider shadow">
                     Best Value
                   </span>
                 )}
-                
+
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     {/* Circle Logo matching screenshot styling */}
-                    <div className={`w-9 h-9 rounded-full flex items-center justify-center border shadow-sm ${
-                      p.id === "gold"
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center border shadow-sm ${p.id === "gold"
                         ? "bg-yellow-500 border-yellow-400 text-white"
                         : p.id === "silver"
-                        ? "bg-slate-400 border-slate-300 text-white"
-                        : p.id === "bronze"
-                        ? "bg-amber-600 border-amber-500 text-white"
-                        : "bg-zinc-200 dark:bg-zinc-700 border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300"
-                    }`}>
+                          ? "bg-slate-400 border-slate-300 text-white"
+                          : p.id === "bronze"
+                            ? "bg-amber-600 border-amber-500 text-white"
+                            : "bg-zinc-200 dark:bg-zinc-700 border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300"
+                      }`}>
                       <Crown className={`w-4 h-4 ${p.id === "free" ? "text-zinc-400" : "fill-current"}`} />
                     </div>
                     <div>
@@ -315,9 +309,8 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
                       </span>
                       <span className="text-[9px] text-muted-foreground">/mo.</span>
                     </div>
-                    <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${
-                      isSelected ? "rotate-180 text-teal-500" : ""
-                    }`} />
+                    <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${isSelected ? "rotate-180 text-teal-500" : ""
+                      }`} />
                   </div>
                 </div>
 
@@ -363,22 +356,21 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
           <Button
             onClick={handleRazorpayUpgrade}
             disabled={loading || isCurrentPlanActive || selectedPlan === "free"}
-            className={`w-full font-bold py-2.5 rounded-full flex items-center justify-center gap-2 shadow-md transition-all hover:scale-[1.01] ${
-              isCurrentPlanActive 
+            className={`w-full font-bold py-2.5 rounded-full flex items-center justify-center gap-2 shadow-md transition-all hover:scale-[1.01] ${isCurrentPlanActive
                 ? "bg-zinc-200 text-zinc-500 cursor-not-allowed dark:bg-zinc-800 dark:text-zinc-400"
                 : "bg-red-600 hover:bg-red-700 text-white"
-            }`}
+              }`}
           >
             {loading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               <Sparkles className="w-4 h-4" />
             )}
-            {isCurrentPlanActive 
-              ? "Active Plan" 
+            {isCurrentPlanActive
+              ? "Active Plan"
               : selectedPlan === "free"
-              ? "Select a Premium Plan"
-              : `Upgrade with Razorpay`
+                ? "Select a Premium Plan"
+                : `Upgrade with Razorpay`
             }
           </Button>
 

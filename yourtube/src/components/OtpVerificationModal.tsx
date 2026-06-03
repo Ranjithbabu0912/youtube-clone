@@ -122,7 +122,9 @@ export default function OtpVerificationModal({
           setVerificationData(response.data);
           setCountdown(60);
           if (response.data.simulatedOtp) {
-            toast.info("New OTP generated (simulation mode)");
+            toast.success(`New OTP generated: ${response.data.simulatedOtp}`, {
+              duration: 10000,
+            });
           } else {
             toast.success("New OTP code sent to your email!");
           }
@@ -242,6 +244,11 @@ export default function OtpVerificationModal({
                 required
                 autoFocus={!isSimulated}
               />
+              {isSimulated && (
+                <div className="text-center text-xs font-semibold text-amber-600 dark:text-amber-400 mt-1.5 animate-pulse">
+                  Simulated OTP: <span className="font-mono bg-amber-100 dark:bg-amber-950/40 px-1.5 py-0.5 rounded text-amber-800 dark:text-amber-300 font-bold">{verificationData?.simulatedOtp}</span>
+                </div>
+              )}
             </div>
             <Button
               type="submit"

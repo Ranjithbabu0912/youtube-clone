@@ -104,7 +104,9 @@ export const UserProvider = ({ children }) => {
         setVerificationData(response.data);
         setOtpStep("otp");
         if (response.data.simulatedOtp) {
-          toast.info("OTP generated (simulation — check the modal)");
+          toast.success(`OTP generated! Code: ${response.data.simulatedOtp}`, {
+            duration: 10000,
+          });
         } else {
           toast.success("OTP code sent to your email!");
         }

@@ -13,7 +13,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, format } from "date-fns";
 import { useUser } from "@/lib/AuthContext";
 import axiosInstance from "@/lib/axiosinstance";
 import { toast } from "sonner";
@@ -25,6 +25,31 @@ interface VideoInfoProps {
   video: any;
   allVideos?: any[];
 }
+
+const formatNumber = (num: number) => {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1).replace(/\.0$/, "") + "m";
+  }
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1).replace(/\.0$/, "") + "k";
+  }
+  return num.toLocaleString();
+};
+
+const formatDate = (dateStr: string) => {
+  try {
+    const d = new Date(dateStr);
+    return {
+      dayMonth: format(d, "d MMM"),
+      year: format(d, "yyyy")
+    };
+  } catch (e) {
+    return {
+      dayMonth: "13 May",
+      year: "2026"
+    };
+  }
+};
 
 const getVideoDetails = (title: string, channel: string) => {
   const t = (title || "").toLowerCase();
@@ -470,24 +495,104 @@ const VideoInfo = ({ video, allVideos = [] }: VideoInfoProps) => {
       </div>
 
       {/* Description Box */}
-      <div className="bg-background dark:bg-background/30 rounded-xl p-3.5 text-foreground shadow-sm hover:bg-zinc-150 dark:hover:bg-zinc-900/80 transition-colors">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs md:text-sm font-bold mb-1.5">
-          <span>{video.views.toLocaleString()} views</span>
-          <span>{formatDistanceToNow(new Date(video.createdAt))} ago</span>
-          <span className="text-red-500 font-semibold">{hashtags}</span>
-        </div>
-        <div className={`text-xs md:text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 ${showFullDescription ? "" : "line-clamp-2"}`}>
-          <p>{description}</p>
-        </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="mt-1.5 p-0 h-auto font-bold text-xs text-foreground hover:bg-transparent hover:text-red-500 transition-colors"
-          onClick={() => setShowFullDescription(!showFullDescription)}
+      {!showFullDescription ? (
+        <div
+          onClick={() => setShowFullDescription(true)}
+          className="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-3.5 text-foreground shadow-sm hover:bg-zinc-150 dark:hover:bg-zinc-900/80 transition-colors cursor-pointer"
         >
-          {showFullDescription ? "...less" : "...more"}
-        </Button>
-      </div>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs md:text-sm font-bold mb-1.5">
+            <span>{video.views.toLocaleString()} views</span>
+            <span>{formatDistanceToNow(new Date(video.createdAt))} ago</span>
+            <span className="text-red-500 font-semibold">{hashtags}</span>
+          </div>
+          <div className="text-xs md:text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 line-clamp-2">
+            <p>{description}</p>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="mt-1.5 p-0 h-auto font-bold text-xs text-foreground hover:bg-transparent hover:text-red-500 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowFullDescription(true);
+            }}
+          >
+            ...more
+          </Button>
+        </div>
+      ) : (
+        <div className="bg-[#040d0d] border border-teal-950/30 rounded-2xl p-4 text-foreground shadow-sm">
+          {/* Title and Channel Header inside expanded description box */}
+          <div className="mb-4">
+            <h2 className="text-sm md:text-base font-bold leading-snug text-white">
+              {video.videotitle}
+            </h2>
+            <div className="flex items-center gap-2 mt-2">
+              <Avatar className="w-6 h-6 border border-border/50">
+                <AvatarFallback className="bg-zinc-800 text-zinc-100 font-bold text-[10px]">
+                  {video.videochanel ? video.videochanel[0] : "C"}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-xs font-semibold text-zinc-400">{video.videochanel}</span>
+            </div>
+          </div>
+
+          {/* 3 cards grid */}
+          <div className="grid grid-cols-3 gap-3 my-4">
+            <div className="bg-[#0f2424]/60 dark:bg-[#0c1f1f] border border-teal-950/30 rounded-2xl p-3 text-center flex flex-col justify-center min-h-[85px] shadow-sm">
+              <span className="text-base md:text-lg font-bold text-white leading-none">
+                {formatNumber(likes)}
+              </span>
+              <span className="text-[11px] md:text-xs text-teal-400 dark:text-teal-400 font-semibold mt-2 uppercase tracking-wide">
+                Likes
+              </span>
+            </div>
+            <div className="bg-[#0f2424]/60 dark:bg-[#0c1f1f] border border-teal-950/30 rounded-2xl p-3 text-center flex flex-col justify-center min-h-[85px] shadow-sm">
+              <span className="text-base md:text-lg font-bold text-white leading-none">
+                {video.views.toLocaleString()}
+              </span>
+              <span className="text-[11px] md:text-xs text-teal-400 dark:text-teal-400 font-semibold mt-2 uppercase tracking-wide">
+                Views
+              </span>
+            </div>
+            <div className="bg-[#0f2424]/60 dark:bg-[#0c1f1f] border border-teal-950/30 rounded-2xl p-3 text-center flex flex-col justify-center min-h-[85px] shadow-sm">
+              <span className="text-base md:text-lg font-bold text-white leading-none">
+                {formatDate(video.createdAt).dayMonth}
+              </span>
+              <span className="text-[11px] md:text-xs text-teal-400 dark:text-teal-400 font-semibold mt-2 uppercase tracking-wide">
+                {formatDate(video.createdAt).year}
+              </span>
+            </div>
+          </div>
+
+          {/* Hashtags Row */}
+          <div className="flex flex-wrap gap-2 my-4">
+            {hashtags.split(" ").map((tag, idx) => (
+              <span 
+                key={idx} 
+                className="bg-[#122b2b] text-teal-300 text-xs font-semibold px-4 py-2 rounded-full border border-teal-900/30"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Description Text Container */}
+          <div className="bg-[#081717]/40 border border-teal-900/20 rounded-2xl p-4 mt-3 text-xs md:text-sm leading-relaxed text-zinc-300">
+            <p>{description}</p>
+            <div className="flex justify-end mt-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="p-0 h-auto font-bold text-xs text-teal-400 hover:bg-transparent hover:text-teal-300 transition-colors"
+                onClick={() => setShowFullDescription(false)}
+              >
+                ...less
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Scrollable Tag Carousel */}
       <div className="relative flex items-center group/carousel py-1 border-b border-border/40 pb-3">

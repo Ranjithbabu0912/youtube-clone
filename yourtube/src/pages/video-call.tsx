@@ -310,12 +310,13 @@ export default function VideoCallPage() {
 
       setTimeout(() => {
         if (!ytPlayerRef.current) return;
+        const player = ytPlayerRef.current;
         if (action === "play") {
-          ytPlayerRef.current.seekTo(time, true);
-          ytPlayerRef.current.playVideo();
+          if (typeof player.seekTo === "function") player.seekTo(time, true);
+          if (typeof player.playVideo === "function") player.playVideo();
         } else if (action === "pause") {
-          ytPlayerRef.current.pauseVideo();
-          ytPlayerRef.current.seekTo(time, true);
+          if (typeof player.pauseVideo === "function") player.pauseVideo();
+          if (typeof player.seekTo === "function") player.seekTo(time, true);
         }
         setTimeout(() => {
           isSyncingRef.current = false;

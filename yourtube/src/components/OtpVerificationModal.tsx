@@ -9,7 +9,7 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
-import { Loader2, ShieldCheck, Mail, Phone } from "lucide-react";
+import { Loader2, ShieldCheck, Mail } from "lucide-react";
 import axiosInstance from "@/lib/axiosinstance";
 
 interface OtpVerificationModalProps {
@@ -31,45 +31,17 @@ export default function OtpVerificationModal({
   setVerificationData,
   login,
 }: OtpVerificationModalProps) {
-  const [mobileNumber, setMobileNumber] = useState("");
   const [otpCode, setOtpCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(60);
 
+  // Always start countdown when modal opens
   useEffect(() => {
-    if (step === "otp" && countdown > 0) {
+    if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
     }
-  }, [step, countdown]);
-
-  const handleSendMobileOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!mobileNumber.trim()) {
-      toast.error("Please enter a valid mobile number");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const response = await axiosInstance.post("/user/verify-mobile", {
-        userId: verificationData?.userId,
-        mobile: mobileNumber.trim(),
-      });
-
-      if (response.data.status === "OTP_REQUIRED") {
-        setVerificationData(response.data);
-        setStep("otp");
-        setCountdown(60);
-        toast.success(`Verification code sent to ${mobileNumber}`);
-      }
-    } catch (err: any) {
-      console.error(err);
-      toast.error(err.response?.data?.message || "Failed to send verification code");
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [countdown]);
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,36 +71,19 @@ export default function OtpVerificationModal({
   };
 
   const handleResendOtp = async () => {
-    if (countdown > 0) return;
+    if (countdown > 0 || loading) return;
     setLoading(true);
     try {
-      if (verificationData?.method === "email") {
-        // Re-login to trigger email OTP again
-        const localUserStr = localStorage.getItem("user");
-        const email = verificationData.destination;
-        
-        const response = await axiosInstance.post("/user/login", {
-          email,
-          locationState: "Tamil Nadu", // Ensure southern state logic
-        });
-        
-        if (response.data.status === "OTP_REQUIRED") {
-          setVerificationData(response.data);
-          setCountdown(60);
-          toast.success("New OTP code sent to your email!");
-        }
-      } else {
-        // Mobile resend
-        const response = await axiosInstance.post("/user/verify-mobile", {
-          userId: verificationData?.userId,
-          mobile: verificationData?.destination,
-        });
+      // Always resend via email
+      const response = await axiosInstance.post("/user/login", {
+        email: verificationData?.destination,
+      });
 
-        if (response.data.status === "OTP_REQUIRED") {
-          setVerificationData(response.data);
-          setCountdown(60);
-          toast.success("New OTP code sent to your mobile!");
-        }
+      if (response.data.status === "OTP_REQUIRED") {
+        setVerificationData(response.data);
+        setCountdown(60);
+        setOtpCode("");
+        toast.success("New OTP code sent to your email!");
       }
     } catch (err: any) {
       console.error(err);
@@ -138,9 +93,16 @@ export default function OtpVerificationModal({
     }
   };
 
+  /* ── Mobile OTP template (kept for future use, never rendered) ──────────
+  const handleSendMobileOtp = async (e: React.FormEvent) => { ... }
+  ───────────────────────────────────────────────────────────────────────── */
+
   return (
     <Dialog open={true} onOpenChange={() => {}}>
-      <DialogContent className="sm:max-w-[400px] p-6 rounded-2xl border bg-background text-foreground shadow-2xl" aria-describedby={undefined}>
+      <DialogContent
+        className="sm:max-w-[400px] p-6 rounded-2xl border bg-background text-foreground shadow-2xl"
+        aria-describedby={undefined}
+      >
         <DialogHeader className="text-center space-y-2">
           <div className="mx-auto w-12 h-12 bg-red-100 dark:bg-red-950/40 rounded-full flex items-center justify-center mb-2">
             <ShieldCheck className="w-6 h-6 text-red-600 dark:text-red-400" />
@@ -149,121 +111,70 @@ export default function OtpVerificationModal({
             Security Verification
           </DialogTitle>
           <DialogDescription className="text-muted-foreground text-sm">
-            {step === "mobile"
-              ? "We need a registered mobile number to verify your account credentials."
-              : `Enter the 6-digit verification code sent to your registered ${
-                  verificationData?.method === "email" ? "email" : "mobile number"
-                }.`}
+            Enter the 6-digit code sent to your email address.
           </DialogDescription>
         </DialogHeader>
 
-        {step === "mobile" ? (
-          <form onSubmit={handleSendMobileOtp} className="space-y-4 pt-4">
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
-                <Phone className="w-3.5 h-3.5" /> Mobile Number
-              </label>
-              <Input
-                type="tel"
-                placeholder="e.g. +91 98765 43210"
-                value={mobileNumber}
-                onChange={(e) => setMobileNumber(e.target.value)}
-                className="bg-transparent border-input text-sm h-10 px-3 w-full"
-                required
-                autoFocus
-              />
-            </div>
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-full flex items-center justify-center gap-2"
-            >
-              {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                "Send Verification Code"
-              )}
-            </Button>
-            {verificationData?.method === "mobile" && verificationData?.destination && (
-              <div className="text-center pt-1">
-                <button
-                  type="button"
-                  onClick={() => setStep("otp")}
-                  className="text-xs font-semibold text-muted-foreground hover:text-foreground hover:underline bg-transparent border-0 cursor-pointer"
-                >
-                  Cancel & Go Back
-                </button>
-              </div>
-            )}
-          </form>
-        ) : (
-          <form onSubmit={handleVerifyOtp} className="space-y-4 pt-4">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
-                  {verificationData?.method === "email" ? (
-                    <Mail className="w-3.5 h-3.5" />
-                  ) : (
-                    <Phone className="w-3.5 h-3.5" />
-                  )}
-                  Verification Destination: <span className="font-bold text-foreground">{verificationData?.destination}</span>
-                </label>
-                {verificationData?.method === "mobile" && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setStep("mobile");
-                      setMobileNumber(verificationData.destination || "");
-                    }}
-                    className="text-xs font-semibold text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 underline cursor-pointer bg-transparent border-0"
-                  >
-                    Change
-                  </button>
-                )}
-              </div>
-              <Input
-                type="text"
-                placeholder="Enter 6-digit OTP"
-                maxLength={6}
-                value={otpCode}
-                onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
-                className="bg-transparent border-input text-center text-lg tracking-widest font-extrabold h-11"
-                required
-                autoFocus
-              />
-            </div>
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-full flex items-center justify-center gap-2"
-            >
-              {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                "Verify & Sign In"
-              )}
-            </Button>
+        <form onSubmit={handleVerifyOtp} className="space-y-4 pt-4">
+          {/* Destination badge */}
+          <div className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm">
+            <Mail className="w-4 h-4 text-red-500 shrink-0" />
+            <span className="text-muted-foreground truncate">
+              {verificationData?.destination ?? "your registered email"}
+            </span>
+          </div>
 
-            <div className="flex items-center justify-between text-xs pt-2">
-              <span className="text-muted-foreground">
-                {countdown > 0 ? `Resend code in ${countdown}s` : "Didn't receive code?"}
-              </span>
-              <button
-                type="button"
-                onClick={handleResendOtp}
-                disabled={countdown > 0 || loading}
-                className={`font-semibold hover:underline bg-transparent border-0 cursor-pointer ${
-                  countdown > 0
-                    ? "text-gray-400 dark:text-zinc-600"
-                    : "text-red-600 dark:text-red-400"
-                }`}
-              >
-                Resend OTP
-              </button>
-            </div>
-          </form>
-        )}
+          {/* OTP input */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-muted-foreground">
+              Verification Code
+            </label>
+            <Input
+              type="text"
+              inputMode="numeric"
+              placeholder="• • • • • •"
+              maxLength={6}
+              value={otpCode}
+              onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
+              className="bg-transparent border-input text-center text-2xl tracking-[0.5em] font-extrabold h-12"
+              required
+              autoFocus
+            />
+          </div>
+
+          <Button
+            type="submit"
+            disabled={loading || otpCode.length !== 6}
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-full flex items-center justify-center gap-2"
+          >
+            {loading ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> Verifying...</>
+            ) : (
+              "Verify & Sign In"
+            )}
+          </Button>
+
+          {/* Resend row */}
+          <div className="flex items-center justify-between text-xs pt-1">
+            <span className="text-muted-foreground">
+              {countdown > 0 ? `Resend available in ${countdown}s` : "Didn't receive code?"}
+            </span>
+            <button
+              type="button"
+              onClick={handleResendOtp}
+              disabled={countdown > 0 || loading}
+              className={`font-semibold hover:underline bg-transparent border-0 cursor-pointer transition-colors ${
+                countdown > 0
+                  ? "text-gray-400 dark:text-zinc-600 cursor-not-allowed"
+                  : "text-red-600 dark:text-red-400"
+              }`}
+            >
+              Resend OTP
+            </button>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   );
 }
+

@@ -26,12 +26,16 @@ export const login = async (req, res) => {
     await existingUser.save();
 
     // Always send OTP to email
-    await sendOTPEmail(email, otp);
+    const emailResult = await sendOTPEmail(email, otp);
     return res.status(200).json({
       status: "OTP_REQUIRED",
       method: "email",
       destination: email,
-      userId: existingUser._id
+      userId: existingUser._id,
+      // Include simulated OTP in response when real email can't be sent (dev/demo mode)
+      ...(emailResult.simulated && emailResult.simulatedOtp
+        ? { simulatedOtp: emailResult.simulatedOtp }
+        : {}),
     });
   } catch (error) {
     console.error("Login error:", error);

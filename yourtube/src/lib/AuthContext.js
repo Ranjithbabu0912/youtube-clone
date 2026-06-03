@@ -98,24 +98,29 @@ export const UserProvider = ({ children }) => {
         locationState,
       };
 
-      // Show sending OTP loading state
-      toast.loading("Sending OTP to your email...", { id: toastId });
-
       const response = await axiosInstance.post("/user/login", payload);
 
       if (response.data.status === "OTP_REQUIRED") {
         setVerificationData(response.data);
         setOtpStep("otp");
-        toast.success(`OTP sent to ${firebaseuser.email}`, { id: toastId });
+        if (response.data.simulatedOtp) {
+          toast.info("OTP generated (simulation — check the modal)");
+        } else {
+          toast.success("OTP code sent to your email!");
+        }
+      } else if (response.data.status === "MOBILE_REQUIRED") {
+        setVerificationData(response.data);
+        setOtpStep("mobile");
       } else {
         login(response.data.result);
-        toast.success("Successfully logged in!", { id: toastId });
+        toast.success("Successfully logged in!");
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to sign in. Please try again.", { id: toastId });
+      toast.error("Failed to sign in. Please try again.");
     } finally {
       isLoggingInRef.current = false;
+      toast.dismiss(toastId);
     }
   };
 
@@ -141,6 +146,9 @@ export const UserProvider = ({ children }) => {
           if (response.data.status === "OTP_REQUIRED") {
             setVerificationData(response.data);
             setOtpStep("otp");
+          } else if (response.data.status === "MOBILE_REQUIRED") {
+            setVerificationData(response.data);
+            setOtpStep("mobile");
           } else {
             login(response.data.result);
           }

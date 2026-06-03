@@ -215,7 +215,7 @@ export const sendOTPEmail = async (userEmail, otp) => {
       console.log(`[OTP SENT TO EMAIL] To: ${userEmail}`);
       console.log(`[OTP MESSAGE] Your verification code is: ${otp}`);
       console.log(`========================================`);
-      return { success: true, simulated: true };
+      return { success: true, simulated: true, simulatedOtp: otp };
     }
   }
 
@@ -255,7 +255,7 @@ export const sendOTPEmail = async (userEmail, otp) => {
     console.log(`[OTP EMAIL SIMULATION] To: ${userEmail}`);
     console.log(`[OTP MESSAGE] Your verification code is: ${otp}`);
     console.log(`========================================`);
-    return { success: true, simulated: true };
+    return { success: true, simulated: true, simulatedOtp: otp };
   }
 };
 

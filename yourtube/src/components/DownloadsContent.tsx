@@ -117,7 +117,8 @@ export default function DownloadsContent() {
               >
                 <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden shadow-sm">
                   <video
-                    src={getMediaUrl(item.videoId.filepath)}
+                    src={item.videoId.filepath ? `${getMediaUrl(item.videoId.filepath)}#t=0.1` : ""}
+                    preload="metadata"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                   />
                   <div className="absolute inset-0 bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">

@@ -79,7 +79,8 @@ const SearchResult = ({ query }: any) => {
               <Link href={`/watch/${video._id}`} className="flex-shrink-0 w-full sm:w-80">
                 <div className="relative w-full aspect-video bg-gray-100 rounded-lg overflow-hidden">
                   <video
-                    src={getMediaUrl(video.filepath)}
+                    src={video.filepath ? `${getMediaUrl(video.filepath)}#t=0.1` : ""}
+                    preload="metadata"
                     onLoadedMetadata={(e) => handleLoadedMetadata(video._id, e)}
                     className="object-cover group-hover:scale-105 transition-transform duration-200"
                   />

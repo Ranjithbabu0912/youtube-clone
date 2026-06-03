@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
+import { getMediaUrl } from "@/lib/utils";
 
 interface RelatedVideosProps {
   videos: Array<{
@@ -9,9 +10,10 @@ interface RelatedVideosProps {
     videochanel: string;
     views: number;
     createdAt: string;
+    filepath?: string;
   }>;
 }
-const vid = "/video/vdo.mp4";
+
 export default function RelatedVideos({ videos }: RelatedVideosProps) {
   return (
     <div className="space-y-2">
@@ -23,7 +25,8 @@ export default function RelatedVideos({ videos }: RelatedVideosProps) {
         >
           <div className="relative w-40 aspect-video bg-gray-100 rounded overflow-hidden flex-shrink-0">
             <video
-              src={vid}
+              src={video.filepath ? `${getMediaUrl(video.filepath)}#t=0.1` : ""}
+              preload="metadata"
               className="object-cover group-hover:scale-105 transition-transform duration-200"
             />
           </div>

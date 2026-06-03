@@ -25,7 +25,8 @@ export default function VideoCard({ video }: any) {
       <div className="space-y-3">
         <div className="relative aspect-video rounded-lg overflow-hidden bg-zinc-100 dark:bg-zinc-800">
           <video
-            src={getMediaUrl(video?.filepath)}
+            src={video?.filepath ? `${getMediaUrl(video.filepath)}#t=0.1` : ""}
+            preload="metadata"
             onLoadedMetadata={handleLoadedMetadata}
             className="object-cover group-hover:scale-105 transition-transform duration-200"
           />

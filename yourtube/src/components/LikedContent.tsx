@@ -96,7 +96,8 @@ export default function LikedVideosContent() {
               <Link href={`/watch/${item.videoid._id}`} className="flex-shrink-0 w-full sm:w-40">
                 <div className="relative w-full aspect-video bg-gray-100 rounded overflow-hidden">
                   <video
-                    src={getMediaUrl(item.videoid.filepath)}
+                    src={item.videoid.filepath ? `${getMediaUrl(item.videoid.filepath)}#t=0.1` : ""}
+                    preload="metadata"
                     className="object-cover group-hover:scale-105 transition-transform duration-200"
                   />
                 </div>

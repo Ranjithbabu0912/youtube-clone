@@ -207,6 +207,21 @@ export default function VideoPlayer({ video, allVideos }: VideoPlayerProps) {
   const [isLimitReached, setIsLimitReached] = useState(false);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
 
+  // Autoplay video on source load/change
+  useEffect(() => {
+    if (isLimitReached) return;
+    if (videoRef.current && video?.filepath) {
+      videoRef.current.load();
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.log("Autoplay was prevented by browser:", error);
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [video?.filepath]);
+
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const unsyncedTimeRef = useRef(0);
   const watchTimeRef = useRef(0); // keep a ref for interval sync because state closes over values
@@ -365,17 +380,15 @@ export default function VideoPlayer({ video, allVideos }: VideoPlayerProps) {
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative group">
         <video
           ref={videoRef}
+          src={video?.filepath ? `${getMediaUrl(video.filepath)}#t=0.1` : ""}
+          preload="metadata"
           className="w-full h-full"
           controls
+          autoPlay
           onPlay={handlePlay}
           onPause={handlePause}
           onEnded={handlePause}
-          poster={`/placeholder.svg?height=480&width=854`}
         >
-          <source
-            src={getMediaUrl(video?.filepath)}
-            type="video/mp4"
-          />
           Your browser does not support the video tag.
         </video>
 

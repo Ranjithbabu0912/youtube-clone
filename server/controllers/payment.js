@@ -38,12 +38,17 @@ const getRazorpayInstance = () => {
 };
 
 export const createOrder = async (req, res) => {
-  const { userId, plan, amount: reqAmount } = req.body;
+  const { userId, plan, amount: reqAmount, billingCycle } = req.body;
 
   try {
     let amount = reqAmount || 9900; // default/fallback
     if (plan && PLAN_PRICES[plan] !== undefined) {
-      amount = PLAN_PRICES[plan] * 100; // Convert INR to Paise
+      if (billingCycle === "annually") {
+        // 20% discount on 12 months
+        amount = Math.round(PLAN_PRICES[plan] * 12 * 0.8) * 100;
+      } else {
+        amount = PLAN_PRICES[plan] * 100; // Convert INR to Paise
+      }
     }
 
     const razorpay = getRazorpayInstance();

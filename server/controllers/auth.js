@@ -183,3 +183,14 @@ export const verifyOtp = async (req, res) => {
     return res.status(500).json({ message: "Something went wrong" });
   }
 };
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const allUsers = await users.find({}, "name email image plan");
+    return res.status(200).json(allUsers);
+  } catch (error) {
+    console.error("getAllUsers error:", error);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+};
+

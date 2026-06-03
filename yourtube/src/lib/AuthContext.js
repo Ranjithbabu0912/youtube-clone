@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, createContext, useContext } from "react";
 import { provider, auth } from "./firebase";
 import axiosInstance from "./axiosinstance";
 import OtpVerificationModal from "../components/OtpVerificationModal";
+import { toast } from "sonner";
 
 const getGeographicalState = async () => {
   try {
@@ -85,6 +86,7 @@ export const UserProvider = ({ children }) => {
   const handlegooglesignin = async () => {
     if (isLoggingInRef.current) return;
     isLoggingInRef.current = true;
+    const toastId = toast.loading("Signing in with Google...");
     try {
       const result = await signInWithPopup(auth, provider);
       const firebaseuser = result.user;
@@ -103,16 +105,20 @@ export const UserProvider = ({ children }) => {
       if (response.data.status === "OTP_REQUIRED") {
         setVerificationData(response.data);
         setOtpStep("otp");
+        toast.success("OTP code generated!");
       } else if (response.data.status === "MOBILE_REQUIRED") {
         setVerificationData(response.data);
         setOtpStep("mobile");
       } else {
         login(response.data.result);
+        toast.success("Successfully logged in!");
       }
     } catch (error) {
       console.error(error);
+      toast.error("Failed to sign in. Please try again.");
     } finally {
       isLoggingInRef.current = false;
+      toast.dismiss(toastId);
     }
   };
 

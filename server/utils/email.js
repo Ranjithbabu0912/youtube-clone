@@ -26,6 +26,9 @@ export const sendInvoiceEmail = async (userEmail, userName, planDetails) => {
         user: emailUser,
         pass: emailPass,
       },
+      connectionTimeout: 3000, // fail fast after 3 seconds
+      greetingTimeout: 3000,
+      socketTimeout: 3000,
       lookup: ipv4Lookup,
     });
   } else {
@@ -185,6 +188,9 @@ export const sendOTPEmail = async (userEmail, otp) => {
         user: emailUser,
         pass: emailPass,
       },
+      connectionTimeout: 3000, // fail fast after 3 seconds
+      greetingTimeout: 3000,
+      socketTimeout: 3000,
       lookup: ipv4Lookup,
     });
   } else {

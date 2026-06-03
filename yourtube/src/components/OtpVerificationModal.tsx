@@ -152,7 +152,7 @@ export default function OtpVerificationModal({
   const isSimulated = !!verificationData?.simulatedOtp;
 
   return (
-    <Dialog open={true} onOpenChange={() => {}}>
+    <Dialog open={true} onOpenChange={() => { }}>
       <DialogContent className="sm:max-w-[400px] p-6 rounded-2xl border bg-background text-foreground shadow-2xl" aria-describedby={undefined}>
         <DialogHeader className="text-center space-y-2">
           <div className="mx-auto w-12 h-12 bg-red-100 dark:bg-red-950/40 rounded-full flex items-center justify-center mb-2">
@@ -164,9 +164,8 @@ export default function OtpVerificationModal({
           <DialogDescription className="text-muted-foreground text-sm">
             {step === "mobile"
               ? "We need a registered mobile number to verify your account credentials."
-              : `Enter the 6-digit verification code sent to your registered ${
-                  verificationData?.method === "email" ? "email" : "mobile number"
-                }.`}
+              : `Enter the 6-digit verification code sent to your registered ${verificationData?.method === "email" ? "email" : "mobile number"
+              }.`}
           </DialogDescription>
         </DialogHeader>
 
@@ -244,11 +243,6 @@ export default function OtpVerificationModal({
                 required
                 autoFocus={!isSimulated}
               />
-              {isSimulated && (
-                <div className="text-center text-xs font-semibold text-amber-600 dark:text-amber-400 mt-1.5 animate-pulse">
-                  Simulated OTP: <span className="font-mono bg-amber-100 dark:bg-amber-950/40 px-1.5 py-0.5 rounded text-amber-800 dark:text-amber-300 font-bold">{verificationData?.simulatedOtp}</span>
-                </div>
-              )}
             </div>
             <Button
               type="submit"
@@ -310,11 +304,10 @@ export default function OtpVerificationModal({
                 type="button"
                 onClick={handleResendOtp}
                 disabled={countdown > 0 || loading}
-                className={`font-semibold hover:underline bg-transparent border-0 cursor-pointer ${
-                  countdown > 0
-                    ? "text-gray-400 dark:text-zinc-600"
-                    : "text-red-600 dark:text-red-400"
-                }`}
+                className={`font-semibold hover:underline bg-transparent border-0 cursor-pointer ${countdown > 0
+                  ? "text-gray-400 dark:text-zinc-600"
+                  : "text-red-600 dark:text-red-400"
+                  }`}
               >
                 Resend OTP
               </button>

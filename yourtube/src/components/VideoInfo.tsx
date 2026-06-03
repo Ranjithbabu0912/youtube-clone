@@ -11,8 +11,7 @@ import {
   Check,
   ChevronDown,
   ChevronLeft,
-  ChevronRight,
-  Sparkles
+  ChevronRight
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useUser } from "@/lib/AuthContext";
@@ -29,14 +28,14 @@ interface VideoInfoProps {
 
 const getVideoDetails = (title: string, channel: string) => {
   const t = (title || "").toLowerCase();
-  
+
   if (t.includes("raga of revenge") || t.includes("dc trailer") || t.includes("sun pictures")) {
     return {
       description: 'Presenting the viral rage "Raga of Revenge" from the movie "DC", Starring Lokesh Kanagaraj and Wamiqa Gabbi, Directed by Arun Matheswaran, Music by Anirudh and Produced by Sun Pictures.',
       hashtags: "#DCtrailer #DCMovie #WamiqaGabbi"
     };
   }
-  
+
   if (t.includes("earth") || t.includes("planet")) {
     return {
       description: `Explore the breathtaking beauty of our planet with ${channel || "Earth Discoveries"}. Featuring stunning footage of oceans, mountains, forests, and wildlife across the globe.`,
@@ -81,11 +80,11 @@ const getVideoDetails = (title: string, channel: string) => {
 
 const getVideoTags = (title: string, channel: string) => {
   const t = (title || "").toLowerCase();
-  
+
   if (t.includes("raga of revenge") || t.includes("dc trailer") || t.includes("sun pictures")) {
     return ["All", "From the series", "From Sun TV", "Anirudh Ravichander", "Indian Music", "Related", "For you", "Recent"];
   }
-  
+
   if (t.includes("earth") || t.includes("planet")) {
     return ["All", "Science", "Nature", "Earth Discoveries", "Documentary", "Planet", "Related", "For you"];
   }
@@ -341,9 +340,8 @@ const VideoInfo = ({ video, allVideos = [] }: VideoInfoProps) => {
                 <Link
                   key={vid._id}
                   href={`/watch/${vid._id}`}
-                  className={`flex gap-3 p-3 items-center hover:bg-white/5 transition-colors ${
-                    vid._id === video._id ? "bg-red-500/10" : ""
-                  }`}
+                  className={`flex gap-3 p-3 items-center hover:bg-white/5 transition-colors ${vid._id === video._id ? "bg-red-500/10" : ""
+                    }`}
                 >
                   <span className="text-xs text-zinc-500 w-4 text-center">{i + 1}</span>
                   <div className="relative w-20 aspect-video rounded overflow-hidden bg-zinc-850 flex-shrink-0">
@@ -436,29 +434,6 @@ const VideoInfo = ({ video, allVideos = [] }: VideoInfoProps) => {
             <span>Share</span>
           </Button>
 
-          {/* Ask Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full h-9 px-3.5 text-foreground flex items-center gap-1.5 text-xs font-medium shadow-sm border border-border/10"
-          >
-            <Sparkles className="w-4 h-4 text-red-500 fill-red-500/20" />
-            <span>Ask</span>
-          </Button>
-
-          {/* Save / Watch Later Button (HIDDEN on mobile views, visible on sm and up) */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className={`hidden sm:flex bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full h-9 px-3.5 text-foreground items-center gap-1.5 text-xs font-medium shadow-sm border border-border/10 ${
-              isWatchLater ? "text-primary dark:text-red-400 font-bold" : ""
-            }`}
-            onClick={handleWatchLater}
-          >
-            <Bookmark className="w-4 h-4" />
-            <span>{isWatchLater ? "Saved" : "Save"}</span>
-          </Button>
-
           {/* Download Button */}
           <Button
             variant="ghost"
@@ -469,6 +444,18 @@ const VideoInfo = ({ video, allVideos = [] }: VideoInfoProps) => {
           >
             <Download className="w-4 h-4" />
             <span>{downloading ? "Saving..." : "Download"}</span>
+          </Button>
+
+          {/* Save / Watch Later Button (HIDDEN on mobile views, visible on sm and up) */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`hidden sm:flex bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full h-9 px-3.5 text-foreground items-center gap-1.5 text-xs font-medium shadow-sm border border-border/10 ${isWatchLater ? "text-primary dark:text-red-400 font-bold" : ""
+              }`}
+            onClick={handleWatchLater}
+          >
+            <Bookmark className="w-4 h-4" />
+            <span>{isWatchLater ? "Saved" : "Save"}</span>
           </Button>
 
           {/* More options */}
@@ -483,7 +470,7 @@ const VideoInfo = ({ video, allVideos = [] }: VideoInfoProps) => {
       </div>
 
       {/* Description Box */}
-      <div className="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-3.5 text-foreground shadow-sm hover:bg-zinc-150 dark:hover:bg-zinc-900/80 transition-colors">
+      <div className="bg-background dark:bg-background/30 rounded-xl p-3.5 text-foreground shadow-sm hover:bg-zinc-150 dark:hover:bg-zinc-900/80 transition-colors">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs md:text-sm font-bold mb-1.5">
           <span>{video.views.toLocaleString()} views</span>
           <span>{formatDistanceToNow(new Date(video.createdAt))} ago</span>
@@ -520,11 +507,10 @@ const VideoInfo = ({ video, allVideos = [] }: VideoInfoProps) => {
           {tags.map((tag, idx) => (
             <button
               key={idx}
-              className={`flex-shrink-0 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                idx === 0
-                  ? "bg-foreground text-background"
-                  : "bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-foreground"
-              }`}
+              className={`flex-shrink-0 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${idx === 0
+                ? "bg-foreground text-background"
+                : "bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-foreground"
+                }`}
             >
               {tag}
             </button>

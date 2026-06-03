@@ -2,6 +2,8 @@ import nodemailer from "nodemailer";
 import twilio from "twilio";
 import dns from "dns";
 
+dns.setDefaultResultOrder("ipv4first");
+
 const ipv4Lookup = (hostname, options, callback) => {
   if (typeof options === "function") {
     callback = options;

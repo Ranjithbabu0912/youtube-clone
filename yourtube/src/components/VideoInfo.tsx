@@ -568,8 +568,8 @@ const VideoInfo = ({ video, allVideos = [] }: VideoInfoProps) => {
           {/* Hashtags Row */}
           <div className="flex flex-wrap gap-2 my-4">
             {hashtags.split(" ").map((tag, idx) => (
-              <span 
-                key={idx} 
+              <span
+                key={idx}
                 className="bg-[#122b2b] text-teal-300 text-xs font-semibold px-4 py-2 rounded-full border border-teal-900/30"
               >
                 {tag}

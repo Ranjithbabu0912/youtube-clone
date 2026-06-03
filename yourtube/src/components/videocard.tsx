@@ -6,7 +6,6 @@ import { getMediaUrl } from "@/lib/utils";
 
 import { useState } from "react";
 
-const videos = "/video/vdo.mp4";
 export default function VideoCard({ video }: any) {
   const [duration, setDuration] = useState("0:00");
 

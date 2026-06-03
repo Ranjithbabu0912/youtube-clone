@@ -131,11 +131,11 @@ const SearchResult = ({ query }: any) => {
         </div>
       )}
 
-      {/* Load More Results */}
+      {/* Results count */}
       {hasResults && (
         <div className="text-center py-8">
           <p className="text-gray-600">
-            Showing {videos.length} results for "{query}"
+            Showing {video.length} results for "{query}"
           </p>
         </div>
       )}

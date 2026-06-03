@@ -392,7 +392,7 @@ export default function VideoPlayer({ video, allVideos }: VideoPlayerProps) {
           Your browser does not support the video tag.
         </video>
 
-        {/* Gesture Interactive Overlay (covers top area of video, leaving bottom controls exposed) */}
+        {/* Gesture interactions overlay */}
         {!isLimitReached && (
           <div
             onClick={handlePlayerClick}
@@ -401,7 +401,7 @@ export default function VideoPlayer({ video, allVideos }: VideoPlayerProps) {
           />
         )}
 
-        {/* Visual HUD Feedback Overlay */}
+        {/* HUD visual feedback */}
         {hudMessage.visible && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/20 pointer-events-none z-30 transition-opacity duration-200">
             <div className="px-5 py-3.5 rounded-2xl flex flex-col items-center gap-2  shadow-2xl transition-all transform scale-100">
@@ -420,7 +420,7 @@ export default function VideoPlayer({ video, allVideos }: VideoPlayerProps) {
           </div>
         )}
 
-        {/* Glassmorphism Limit Reached Overlay */}
+        {/* Limit reached state overlay */}
         {isLimitReached && (
           <div className="absolute inset-0 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 z-40 animate-fade-in">
             <div className="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-center mb-4 border border-yellow-200 shadow-md">

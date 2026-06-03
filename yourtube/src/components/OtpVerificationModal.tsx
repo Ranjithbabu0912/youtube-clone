@@ -45,12 +45,7 @@ export default function OtpVerificationModal({
     }
   }, [step, countdown]);
 
-  // Auto-fill the OTP field when simulated OTP is available
-  useEffect(() => {
-    if (verificationData?.simulatedOtp && step === "otp") {
-      setOtpCode(verificationData.simulatedOtp);
-    }
-  }, [verificationData?.simulatedOtp, step]);
+
 
   const handleSendMobileOtp = async (e: React.FormEvent) => {
     e.preventDefault();

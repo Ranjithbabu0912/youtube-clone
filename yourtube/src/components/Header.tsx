@@ -136,10 +136,10 @@ const Header = () => {
         {(!user || (user.plan !== "gold" && user.plan !== "premium")) && (
           <Button
             onClick={() => setIsPremiumModalOpen(true)}
-            className="flex items-center gap-1 rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-3 h-8 shadow-sm mr-1.5"
+            className="flex items-center gap-1 rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-2 sm:px-3 h-8 shadow-sm mr-1.5"
           >
             <Crown className="w-3.5 h-3.5 fill-white" />
-            Upgrade Plan
+            <span className="hidden sm:inline">Upgrade Plan</span>
           </Button>
         )}
 

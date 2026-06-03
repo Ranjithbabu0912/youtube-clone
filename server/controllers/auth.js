@@ -194,3 +194,34 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
+export const detectLocation = async (req, res) => {
+  try {
+    let ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "";
+    
+    if (ip.includes(",")) {
+      ip = ip.split(",")[0].trim();
+    }
+    
+    if (ip === "::1" || ip === "::ffff:127.0.0.1") {
+      ip = "";
+    }
+
+    const apiUrl = ip ? `https://freeipapi.com/api/json/${ip}` : "https://freeipapi.com/api/json";
+    
+    const response = await fetch(apiUrl);
+    if (response.ok) {
+      const data = await response.json();
+      if (data && data.regionName) {
+        console.log(`Detected location on backend for IP ${ip || "local"}:`, data.regionName);
+        return res.status(200).json({ region: data.regionName });
+      }
+    }
+    
+    console.warn("freeipapi lookup returned non-ok response on backend, defaulting to Tamil Nadu");
+    return res.status(200).json({ region: "Tamil Nadu" });
+  } catch (error) {
+    console.error("detectLocation backend error (falling back to Tamil Nadu):", error);
+    return res.status(200).json({ region: "Tamil Nadu" });
+  }
+};
+

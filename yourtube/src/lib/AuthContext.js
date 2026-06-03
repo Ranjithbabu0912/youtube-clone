@@ -7,16 +7,27 @@ import { toast } from "sonner";
 
 const getGeographicalState = async () => {
   try {
+    const res = await axiosInstance.get("/user/detect-location");
+    if (res.data && res.data.region) {
+      console.log("Geographical location detected via backend proxy:", res.data.region);
+      return res.data.region;
+    }
+  } catch (e) {
+    console.warn("Backend geolocation proxy lookup failed. Trying client-side fallback...", e);
+  }
+
+  // Fallback to client-side API calls if backend is unavailable
+  try {
     const res = await fetch("https://freeipapi.com/api/json");
     if (res.ok) {
       const data = await res.json();
       if (data && data.regionName) {
-        console.log("Location detected (freeipapi):", data.regionName);
+        console.log("Location detected client-side (freeipapi):", data.regionName);
         return data.regionName;
       }
     }
   } catch (e) {
-    console.warn("freeipapi.com lookup failed:", e);
+    console.warn("freeipapi.com client-side lookup failed:", e);
   }
 
   try {
@@ -24,28 +35,15 @@ const getGeographicalState = async () => {
     if (res.ok) {
       const data = await res.json();
       if (data && data.region) {
-        console.log("Location detected (ipapi):", data.region);
+        console.log("Location detected client-side (ipapi):", data.region);
         return data.region;
       }
     }
   } catch (e) {
-    console.warn("ipapi.co lookup failed:", e);
+    console.warn("ipapi.co client-side lookup failed:", e);
   }
 
-  try {
-    const res = await fetch("http://ip-api.com/json/");
-    if (res.ok) {
-      const data = await res.json();
-      if (data && data.status === "success" && data.regionName) {
-        console.log("Location detected (ip-api):", data.regionName);
-        return data.regionName;
-      }
-    }
-  } catch (e) {
-    console.warn("ip-api.com lookup failed:", e);
-  }
-
-  console.log("Geo lookup failed, defaulting to Tamil Nadu");
+  console.log("All geolocation lookups failed, defaulting to Tamil Nadu");
   return "Tamil Nadu";
 };
 

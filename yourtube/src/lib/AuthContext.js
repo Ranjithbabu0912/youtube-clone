@@ -4,6 +4,50 @@ import { provider, auth } from "./firebase";
 import axiosInstance from "./axiosinstance";
 import OtpVerificationModal from "../components/OtpVerificationModal";
 
+const getGeographicalState = async () => {
+  try {
+    const res = await fetch("https://freeipapi.com/api/json");
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.regionName) {
+        console.log("Location detected (freeipapi):", data.regionName);
+        return data.regionName;
+      }
+    }
+  } catch (e) {
+    console.warn("freeipapi.com lookup failed:", e);
+  }
+
+  try {
+    const res = await fetch("https://ipapi.co/json/");
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.region) {
+        console.log("Location detected (ipapi):", data.region);
+        return data.region;
+      }
+    }
+  } catch (e) {
+    console.warn("ipapi.co lookup failed:", e);
+  }
+
+  try {
+    const res = await fetch("http://ip-api.com/json/");
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.status === "success" && data.regionName) {
+        console.log("Location detected (ip-api):", data.regionName);
+        return data.regionName;
+      }
+    }
+  } catch (e) {
+    console.warn("ip-api.com lookup failed:", e);
+  }
+
+  console.log("Geo lookup failed, defaulting to Tamil Nadu");
+  return "Tamil Nadu";
+};
+
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
@@ -45,14 +89,7 @@ export const UserProvider = ({ children }) => {
       const result = await signInWithPopup(auth, provider);
       const firebaseuser = result.user;
 
-      let locationState = "Other";
-      try {
-        const geoRes = await fetch("https://ipapi.co/json/");
-        const geoData = await geoRes.json();
-        locationState = geoData.region || geoData.regionName || "Other";
-      } catch (err) {
-        console.error("Geo fetch error:", err);
-      }
+      const locationState = await getGeographicalState();
 
       const payload = {
         email: firebaseuser.email,
@@ -87,14 +124,7 @@ export const UserProvider = ({ children }) => {
         if (isLoggingInRef.current) return;
         isLoggingInRef.current = true;
         try {
-          let locationState = "Delhi";
-          try {
-            const geoRes = await fetch("https://ipapi.co/json/");
-            const geoData = await geoRes.json();
-            locationState = geoData.region || geoData.regionName || "Other";
-          } catch (err) {
-            console.error("Geo fetch error:", err);
-          }
+          const locationState = await getGeographicalState();
 
           const payload = {
             email: firebaseuser.email,

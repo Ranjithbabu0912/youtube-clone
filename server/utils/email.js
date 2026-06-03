@@ -1,5 +1,14 @@
 import nodemailer from "nodemailer";
 import twilio from "twilio";
+import dns from "dns";
+
+const ipv4Lookup = (hostname, options, callback) => {
+  if (typeof options === "function") {
+    callback = options;
+    options = {};
+  }
+  return dns.lookup(hostname, { ...options, family: 4 }, callback);
+};
 
 export const sendInvoiceEmail = async (userEmail, userName, planDetails) => {
   const emailUser = process.env.EMAIL_USER;
@@ -15,6 +24,7 @@ export const sendInvoiceEmail = async (userEmail, userName, planDetails) => {
         user: emailUser,
         pass: emailPass,
       },
+      lookup: ipv4Lookup,
     });
   } else {
     // Fallback: Create Ethereal test account
@@ -28,6 +38,7 @@ export const sendInvoiceEmail = async (userEmail, userName, planDetails) => {
           user: testAccount.user,
           pass: testAccount.pass,
         },
+        lookup: ipv4Lookup,
       });
       isTestAccount = true;
       console.log("Created Ethereal test SMTP account for billing email.");
@@ -166,6 +177,7 @@ export const sendOTPEmail = async (userEmail, otp) => {
         user: emailUser,
         pass: emailPass,
       },
+      lookup: ipv4Lookup,
     });
   } else {
     try {
@@ -178,6 +190,7 @@ export const sendOTPEmail = async (userEmail, otp) => {
           user: testAccount.user,
           pass: testAccount.pass,
         },
+        lookup: ipv4Lookup,
       });
       isTestAccount = true;
     } catch (err) {
